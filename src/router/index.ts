@@ -14,11 +14,7 @@ const routes: RouteConfig[] = [
     },
     {
         path: '/live',
-        component: 'live-page',
-    },
-    {
-        path: '/profile',
-        component: 'profile-page',
+        component: 'live-room-page',
     },
 ];
 
@@ -35,7 +31,7 @@ function renderRoute() {
         return;
     }
 
-    const currentPath = location.hash.replace('#', '') || '/';
+    const currentPath = getCurrentPath();
 
     const matchedRoute = routes.find((route) => route.path === currentPath);
 
@@ -47,6 +43,28 @@ function renderRoute() {
     app.innerHTML = `<${matchedRoute.component}></${matchedRoute.component}>`;
 }
 
+function getCurrentPath(): string {
+    const hash = location.hash.replace('#', '');
+
+    const path = hash.split('?')[0];
+
+    return path || '/';
+}
+
 export function navigateTo(path: string) {
     location.hash = path;
+}
+
+export function getHashQueryParam(name: string): string | null {
+    const hash = location.hash.replace('#', '');
+
+    const queryString = hash.split('?')[1];
+
+    if (!queryString) {
+        return null;
+    }
+
+    const params = new URLSearchParams(queryString);
+
+    return params.get(name);
 }
