@@ -2,7 +2,7 @@ import accountIcon from "../../assets/icons/account.svg";
 import calendarIcon from "../../assets/icons/calendar-check.svg";
 import folderIcon from "../../assets/icons/folder.svg";
 import historyIcon from "../../assets/icons/clipboard-clock.svg";
-import logoUrl from "../../assets/images/logo.jpg";
+import logoUrl from "../../assets/images/logo_v2.jpg";
 import searchIcon from "../../assets/icons/search.svg";
 import starIcon from "../../assets/icons/star.svg";
 import { defineElement, icon } from "../../utils/utils";

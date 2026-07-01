@@ -102,10 +102,10 @@ body {
 }
 
 .header-logo img {
-    max-height: 80px;
-    width: auto;
     display: block;
+    max-height: 50px;
     object-fit: contain;
+    width: 120px;
 }
 
 .header-nav {
@@ -557,7 +557,7 @@ body {
     background: #eef0f3;
 }
 
-.live-card__cover > img {
+.live-card__cover>img {
     width: 100%;
     height: 100%;
     object-fit: fill;
@@ -773,7 +773,7 @@ body {
     cursor: pointer;
 }
 
-.excellent-card__body > img {
+.excellent-card__body>img {
     position: absolute;
     inset: 0;
     width: 100%;
