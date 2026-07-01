@@ -1,4 +1,4 @@
-import "./styles.css";
+import "./styles/styles.css";
 import "./components/bannerCarousel/banner-carousel";
 import "./components/category/category-list";
 import "./components/choiceness/choiceness-list";
@@ -8,7 +8,7 @@ import "./components/header/header";
 import "./components/live/live-list";
 
 import { homeChoicenessItems, homeLiveItems } from "./data";
-import type { CategoryItem } from "./models";
+import type { CategoryItem } from "./models/models";
 import { fetchCatalogCategories } from "./services/catalog";
 import { defineElement, escapeHtml } from "./utils/utils";
 

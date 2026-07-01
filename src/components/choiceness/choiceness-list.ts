@@ -2,7 +2,7 @@ import chevronIcon from "../../assets/icons/chevron-right.svg";
 import clockIcon from "../../assets/icons/clock.svg";
 import starIcon from "../../assets/icons/star.svg";
 import { homeChoicenessItems, schematicUrl } from "../../data";
-import type { ChoicenessItem } from "../../models";
+import type { ChoicenessItem } from "../../models/models";
 import { defineElement, escapeHtml, icon } from "../../utils/utils";
 
 export class MediChoicenessList extends HTMLElement {

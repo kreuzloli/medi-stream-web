@@ -1,6 +1,6 @@
 import schematicUrl from "./assets/images/schematic.jpg";
 
-import type { Banner, CategoryItem, ChoicenessItem, ExcellentItem, LiveItem } from "./models";
+import type { Banner, CategoryItem, ChoicenessItem, ExcellentItem, LiveItem } from "./models/models";
 
 const defaultChildren: CategoryItem[] = [
     { dept: "心血管内科1", topics: "心血管内科1", href: "/1", children: [] },

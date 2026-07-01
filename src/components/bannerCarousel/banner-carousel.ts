@@ -1,5 +1,5 @@
 import { defaultBanners } from "../../data";
-import type { Banner } from "../../models";
+import type { Banner } from "../../models/models";
 import { defineElement, escapeHtml } from "../../utils/utils";
 
 export class MediBannerCarousel extends HTMLElement {

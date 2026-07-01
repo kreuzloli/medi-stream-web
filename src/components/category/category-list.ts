@@ -1,5 +1,5 @@
 import { defaultCategories } from "../../data";
-import type { CategoryItem } from "../../models";
+import type { CategoryItem } from "../../models/models";
 import { defineElement, escapeHtml } from "../../utils/utils";
 
 export class MediCategoryList extends HTMLElement {

@@ -1,4 +1,4 @@
-import type { ApiResponse, CategoryItem, DepartmentWithDiseasesDTO } from "../models";
+import type { ApiResponse, CategoryItem, DepartmentWithDiseasesDTO } from "../models/models";
 
 const API_BASE = import.meta.env.VITE_API_BASE || "/api";
 

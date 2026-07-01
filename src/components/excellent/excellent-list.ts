@@ -1,6 +1,6 @@
 import chevronIcon from "../../assets/icons/chevron-right.svg";
 import { defaultExcellentItems, schematicUrl } from "../../data";
-import type { ExcellentItem } from "../../models";
+import type { ExcellentItem } from "../../models/models";
 import { defineElement, escapeHtml, icon } from "../../utils/utils";
 
 export class MediExcellentList extends HTMLElement {

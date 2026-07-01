@@ -2,7 +2,7 @@ import chevronIcon from "../../assets/icons/chevron-right.svg";
 import clockIcon from "../../assets/icons/clock.svg";
 import playIcon from "../../assets/icons/icon-video-play-square.svg";
 import { homeLiveItems, schematicUrl } from "../../data";
-import type { LiveItem } from "../../models";
+import type { LiveItem } from "../../models/models";
 import { defineElement, escapeHtml, icon } from "../../utils/utils";
 
 export class MediLiveList extends HTMLElement {
