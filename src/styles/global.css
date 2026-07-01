@@ -235,8 +235,7 @@ body {
     border-radius: 14px;
     box-shadow: 0 10px 26px rgba(17, 24, 39, 0.08);
     height: 360px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: visible;
     position: relative;
 }
 

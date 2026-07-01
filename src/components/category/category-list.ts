@@ -63,6 +63,10 @@ export class MediCategoryList extends HTMLElement {
         }
 
         wrap.onmouseleave = () => {
+            if (!this.moreOpen && this.activeIndex === null) {
+                return;
+            }
+
             this.moreOpen = false;
             this.activeIndex = null;
             this.render();
@@ -70,13 +74,22 @@ export class MediCategoryList extends HTMLElement {
 
         this.querySelectorAll<HTMLElement>(".category-row").forEach((row) => {
             row.onmouseenter = () => {
-                if (row.dataset.action === "more") {
-                    this.moreOpen = true;
-                    this.activeIndex = null;
-                } else {
-                    this.moreOpen = row.dataset.scope === "m";
-                    this.activeIndex = Number(row.dataset.index);
+                const nextMoreOpen = row.dataset.action === "more" || row.dataset.scope === "m";
+                const nextActiveIndex = row.dataset.action === "more" ? null : Number(row.dataset.index);
+                const shouldRender = nextMoreOpen !== this.moreOpen;
+
+                if (!shouldRender && nextActiveIndex === this.activeIndex) {
+                    return;
                 }
+
+                this.moreOpen = nextMoreOpen;
+                this.activeIndex = nextActiveIndex;
+
+                if (!shouldRender) {
+                    this.syncPopup(row);
+                    return;
+                }
+
                 this.render();
             };
         });
@@ -100,7 +113,25 @@ export class MediCategoryList extends HTMLElement {
         `;
     }
 
-    private popup(categories: CategoryItem[]): string {
+    private syncPopup(row: HTMLElement): void {
+        this.querySelector(".category-popup")?.remove();
+
+        const categories = this.activeCategories;
+        if (this.activeIndex === null) {
+            return;
+        }
+
+        const wrap = this.querySelector<HTMLElement>(".category-wrap");
+        if (!wrap) {
+            return;
+        }
+
+        const rowRect = row.getBoundingClientRect();
+        const wrapRect = wrap.getBoundingClientRect();
+        wrap.insertAdjacentHTML("beforeend", this.popup(categories, rowRect.top - wrapRect.top));
+    }
+
+    private popup(categories: CategoryItem[], top?: number): string {
         if (this.activeIndex === null) {
             return "";
         }
@@ -110,7 +141,7 @@ export class MediCategoryList extends HTMLElement {
             return "";
         }
 
-        const top = 6 + this.activeIndex * 44;
+        const popupTop = top ?? 6 + this.activeIndex * 44;
         const links = item.children
             .map(
                 (child) => `
@@ -122,7 +153,7 @@ export class MediCategoryList extends HTMLElement {
             .join("");
 
         return `
-            <div class="category-popup" style="top: ${top}px; left: calc(100% + 2px);">
+            <div class="category-popup" style="top: ${popupTop}px; left: calc(100% + 2px);">
                 ${links}
             </div>
         `;
