@@ -1,4 +1,4 @@
-import "./styles/styles.css";
+import "./styles/global.css";
 import "./components/bannerCarousel/banner-carousel";
 import "./components/category/category-list";
 import "./components/choiceness/choiceness-list";
@@ -7,11 +7,13 @@ import "./components/footer/footer";
 import "./components/header/header";
 import "./components/live/live-list";
 
+import { startRouter } from './router';
 import { homeChoicenessItems, homeLiveItems } from "./data";
 import type { CategoryItem } from "./models/models";
 import { fetchCatalogCategories } from "./services/catalog";
 import { defineElement, escapeHtml } from "./utils/utils";
 
+startRouter();
 // Vite + Vanilla TypeScript + Web Components
 class MediApp extends HTMLElement {
     private categories: CategoryItem[] | undefined;
