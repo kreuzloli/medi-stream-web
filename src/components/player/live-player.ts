@@ -1,5 +1,5 @@
-import 'tcplayer.js/dist/tcplayer.min.css';
-import TCPlayer from 'tcplayer.js';
+import '../../libs/tcplayer/tcplayer.min.css';
+import tcPlayerUrl from '../../libs/tcplayer/tcplayer.v5.3.3.min.js?url';
 
 type TCPlayerInstance = {
     src: (url: string) => void;
@@ -8,8 +8,36 @@ type TCPlayerInstance = {
     dispose: () => void;
 };
 
+type TCPlayerFactory = (
+    id: string,
+    options: {
+        licenseUrl?: string;
+        width?: string | number;
+        height?: string | number;
+        controls?: boolean;
+        autoplay?: boolean;
+        muted?: boolean;
+        preload?: 'auto' | 'metadata' | 'none';
+        language?: 'zh-CN' | 'en';
+        sources?: Array<{
+            src: string;
+            type?: string;
+        }>;
+    },
+) => TCPlayerInstance;
+
+declare global {
+    interface Window {
+        TCPlayer?: TCPlayerFactory;
+    }
+}
+
 export class LivePlayerComponent extends HTMLElement {
+    private static tcPlayerScriptPromise: Promise<void> | null = null;
+
     private player: TCPlayerInstance | null = null;
+
+    private initPlayerPromise: Promise<void> | null = null;
 
     private readonly licenseUrl =
         'https://1256203008.trtcube-license.cn/license/v2/1256203008_1/v_cube.license';
@@ -23,7 +51,7 @@ export class LivePlayerComponent extends HTMLElement {
      */
     connectedCallback() {
         this.render();
-        this.initPlayer();
+        void this.initPlayer();
     }
 
     /**
@@ -39,14 +67,50 @@ export class LivePlayerComponent extends HTMLElement {
     /**
      * 初始化腾讯云 TCPlayer。
      */
-    private initPlayer() {
+    private async initPlayer() {
+        if (this.player) {
+            return;
+        }
+
+        if (this.initPlayerPromise) {
+            await this.initPlayerPromise;
+            return;
+        }
+
+        this.initPlayerPromise = this.doInitPlayer();
+
+        try {
+            await this.initPlayerPromise;
+        } finally {
+            this.initPlayerPromise = null;
+        }
+    }
+
+    private async doInitPlayer() {
         const videoElement = this.querySelector<HTMLVideoElement>('#tc-live-player');
 
         if (!videoElement) {
             return;
         }
 
-        this.player = TCPlayer('tc-live-player', {
+        try {
+            await LivePlayerComponent.loadTcPlayerScript();
+        } catch (error) {
+            console.error('TCPlayer script load failed', error);
+            this.dispatchStatus('播放器脚本加载失败', 'error');
+            return;
+        }
+
+        if (!this.isConnected) {
+            return;
+        }
+
+        if (!window.TCPlayer) {
+            this.dispatchStatus('播放器脚本加载失败', 'error');
+            return;
+        }
+
+        this.player = window.TCPlayer('tc-live-player', {
             licenseUrl: this.licenseUrl,
             width: '100%',
             height: '100%',
@@ -64,9 +128,9 @@ export class LivePlayerComponent extends HTMLElement {
      *
      * @param url 真正的直播播放地址，不是 License URL。
      */
-    public play(url: string) {
+    public async play(url: string) {
         if (!this.player) {
-            this.initPlayer();
+            await this.initPlayer();
         }
 
         if (!this.player) {
@@ -124,6 +188,27 @@ export class LivePlayerComponent extends HTMLElement {
                 composed: true,
             }),
         );
+    }
+
+    private static loadTcPlayerScript() {
+        if (window.TCPlayer) {
+            return Promise.resolve();
+        }
+
+        if (LivePlayerComponent.tcPlayerScriptPromise) {
+            return LivePlayerComponent.tcPlayerScriptPromise;
+        }
+
+        LivePlayerComponent.tcPlayerScriptPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = tcPlayerUrl;
+            script.async = true;
+            script.onload = () => resolve();
+            script.onerror = () => reject(new Error(`Failed to load TCPlayer script: ${tcPlayerUrl}`));
+            document.head.appendChild(script);
+        });
+
+        return LivePlayerComponent.tcPlayerScriptPromise;
     }
 
     private render() {

@@ -4,7 +4,6 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "tcplayer.js": "^5.3.4"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
