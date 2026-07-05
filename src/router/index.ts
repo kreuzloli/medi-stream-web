@@ -16,6 +16,10 @@ const routes: RouteConfig[] = [
         path: '/live',
         component: 'live-room-page',
     },
+    {
+        path:'/live-test',
+        component: 'live-page'
+    }
 ];
 
 export function startRouter() {

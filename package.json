@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "dependencies": {},
+  "dependencies": {
+    "tcplayer.js": "^5.3.4"
+  },
   "devDependencies": {
     "typescript": "^5.9.3",
     "vite": "^7.2.7"
