@@ -17,8 +17,8 @@ const routes: RouteConfig[] = [
         component: 'live-room-page',
     },
     {
-        path:'/live-test',
-        component: 'live-page'
+        path: '/live-test',
+        component: 'live-page',
     }
 ];
 
@@ -52,7 +52,25 @@ function getCurrentPath(): string {
 
     const path = hash.split('?')[0];
 
-    return path || '/';
+    return normalizeRoutePath(path);
+}
+
+function normalizeRoutePath(path: string): string {
+    const normalizedPath = path.trim();
+
+    if (!normalizedPath) {
+        return '/';
+    }
+
+    const pathWithLeadingSlash = normalizedPath.startsWith('/')
+        ? normalizedPath
+        : `/${normalizedPath}`;
+
+    if (pathWithLeadingSlash.length > 1 && pathWithLeadingSlash.endsWith('/')) {
+        return pathWithLeadingSlash.slice(0, -1);
+    }
+
+    return pathWithLeadingSlash;
 }
 
 export function navigateTo(path: string) {
