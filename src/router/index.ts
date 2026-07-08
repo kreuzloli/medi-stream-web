@@ -17,13 +17,17 @@ const routes: RouteConfig[] = [
         component: 'live-room-page',
     },
     {
-        path: '/live-pusher',
+        path: '/live-push',
         component: 'live-pusher-page',
     },
     {
-        path: '/live-test',
+        path: '/live-play',
         component: 'live-page',
-    }
+    },
+    {
+        path: '/wechat-live-play',
+        component: 'wechat-live-page',
+    },
 ];
 
 export function startRouter() {
