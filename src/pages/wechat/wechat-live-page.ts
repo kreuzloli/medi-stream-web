@@ -1,6 +1,7 @@
 import "../../components/player/live-player";
 import type { LivePlayerComponent } from "../../components/player/live-player";
-import { clearToken, getToken, saveToken } from "../../services/auth";
+import { clearToken, getToken } from "../../services/auth";
+import { handleTokenFromHashUrl, redirectToOAuth } from "../../services/oauth";
 import { buildWechatOAuthUrl } from "../../services/wechat";
 
 type LivePlayerStatus = {
@@ -20,14 +21,14 @@ export class WechatLivePage extends HTMLElement {
     connectedCallback() {
         console.info("[wechat-live] page connected");
 
-        this.handleTokenFromUrl();
+        handleTokenFromHashUrl("/wechat-live-play");
 
         const token = getToken();
 
         if (!token) {
             console.info("[wechat-live] token not found, redirect to wechat oauth");
 
-            this.redirectToWechatOAuth();
+            redirectToOAuth(buildWechatOAuthUrl("/wechat-live-play"));
             return;
         }
 
@@ -35,64 +36,6 @@ export class WechatLivePage extends HTMLElement {
 
         this.render();
         this.bindEvents();
-    }
-
-    /**
-     * 从 hash query 中读取 token。
-     *
-     * 后端最终会重定向到：
-     * #/wechat-live?token=xxxx
-     */
-    private handleTokenFromUrl() {
-        const token = this.getHashQueryParam("token");
-
-        if (!token) {
-            console.info("[wechat-live] no token in url");
-            return;
-        }
-
-        saveToken(token);
-
-        // 保存 token 后清理 URL，避免 token 长时间挂在地址栏。
-        history.replaceState(null, "", "#/wechat-live-play");
-
-        console.info("[wechat-live] token handled from url and url cleaned");
-    }
-
-    /**
-     * 跳转到后端微信 OAuth 入口。
-     *
-     * 注意：
-     * 这里不是直接跳微信官方地址。
-     * 前端只跳我们后端，由后端负责拼 appid、redirect_uri、state 等敏感逻辑。
-     */
-    private redirectToWechatOAuth() {
-        const oauthUrl = buildWechatOAuthUrl("/wechat-live-play");
-
-        console.info("[wechat-live] redirect to oauth", {
-            oauthUrl,
-        });
-
-        location.href = oauthUrl;
-    }
-
-    /**
-     * 从当前 hash 路由里读取 query 参数。
-     *
-     * 示例：
-     * #/wechat-live?token=abc
-     */
-    private getHashQueryParam(name: string): string | null {
-        const hash = location.hash.replace("#", "");
-        const queryString = hash.split("?")[1];
-
-        if (!queryString) {
-            return null;
-        }
-
-        const params = new URLSearchParams(queryString);
-
-        return params.get(name);
     }
 
     /**
@@ -132,7 +75,7 @@ export class WechatLivePage extends HTMLElement {
             console.info("[wechat-live] clear token and re-auth");
 
             clearToken();
-            this.redirectToWechatOAuth();
+            redirectToOAuth(buildWechatOAuthUrl("/wechat-live-play"));
         });
 
         livePlayer.addEventListener("live-player-status", (event) => {
