@@ -54,7 +54,7 @@ export class WechatLivePage extends HTMLElement {
         saveToken(token);
 
         // 保存 token 后清理 URL，避免 token 长时间挂在地址栏。
-        history.replaceState(null, "", "#/wechat-live");
+        history.replaceState(null, "", "#/wechat-live-play");
 
         console.info("[wechat-live] token handled from url and url cleaned");
     }
@@ -67,7 +67,7 @@ export class WechatLivePage extends HTMLElement {
      * 前端只跳我们后端，由后端负责拼 appid、redirect_uri、state 等敏感逻辑。
      */
     private redirectToWechatOAuth() {
-        const oauthUrl = buildWechatOAuthUrl("/wechat-live");
+        const oauthUrl = buildWechatOAuthUrl("/wechat-live-play");
 
         console.info("[wechat-live] redirect to oauth", {
             oauthUrl,
