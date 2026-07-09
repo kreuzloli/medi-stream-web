@@ -5,19 +5,38 @@ import { homeLiveItems, schematicUrl } from "../../data";
 import type { LiveItem } from "../../models/models";
 import { defineElement, escapeHtml, icon } from "../../utils/utils";
 
+/**
+ * 首页近期直播列表。
+ */
 export class MediLiveList extends HTMLElement {
     private _items: LiveItem[] = homeLiveItems;
 
     set items(value: LiveItem[] | undefined) {
         this._items = value ?? homeLiveItems;
+        console.info("[live-list] items updated", {
+            count: this._items.length,
+            useFallback: !value,
+        });
         this.render();
     }
 
     connectedCallback(): void {
+        console.info("[live-list] connected");
         this.render();
     }
 
+    /**
+     * 渲染直播区块。
+     */
     private render(): void {
+        const content = this._items.length === 0
+            ? this.emptyState()
+            : `
+                <div class="live-list">
+                    ${this._items.map((item) => this.item(item)).join("")}
+                </div>
+            `;
+
         this.innerHTML = `
             <div class="live-align">
                 <div class="live-title-wrap">
@@ -27,23 +46,34 @@ export class MediLiveList extends HTMLElement {
                         ${icon(chevronIcon)}
                     </button>
                 </div>
-
-                ${
-                    this._items.length === 0
-                        ? `<div class="empty">暂无近期直播</div>`
-                        : `
-                            <div class="live-timeline-wrap">
-                                ${this._items.map((item) => this.timeline(item)).join("")}
-                            </div>
-                            <div class="live-list">
-                                ${this._items.map((item) => this.card(item)).join("")}
-                            </div>
-                        `
-                }
+                ${content}
             </div>
         `;
     }
 
+    /**
+     * 渲染空状态，并记录接口返回空列表的排查线索。
+     */
+    private emptyState(): string {
+        console.warn("[live-list] empty items");
+        return `<div class="empty">暂无近期直播</div>`;
+    }
+
+    /**
+     * 每条直播由时间轴节点和直播卡片组成，保证第二排卡片也有自己的时间节点。
+     */
+    private item(item: LiveItem): string {
+        return `
+            <div class="live-item">
+                ${this.timeline(item)}
+                ${this.card(item)}
+            </div>
+        `;
+    }
+
+    /**
+     * 渲染单条直播上方的时间轴节点。
+     */
     private timeline(item: LiveItem): string {
         const accentClass = item.isToday ? "is-today" : "is-future";
         return `
@@ -60,6 +90,9 @@ export class MediLiveList extends HTMLElement {
         `;
     }
 
+    /**
+     * 渲染直播卡片。
+     */
     private card(item: LiveItem): string {
         const isLive = (item.status ?? (item.isToday ? "LIVE" : "WAIT")) === "LIVE";
         const cover = item.cover ?? schematicUrl;

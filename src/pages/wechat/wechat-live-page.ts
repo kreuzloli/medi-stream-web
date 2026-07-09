@@ -81,7 +81,10 @@ export class WechatLivePage extends HTMLElement {
         livePlayer.addEventListener("live-player-status", (event) => {
             const customEvent = event as CustomEvent<LivePlayerStatus>;
 
-            console.info("[wechat-live] live player status", customEvent.detail);
+            console.info("[wechat-live] live player status", {
+                type: customEvent.detail.type,
+                hasMessage: Boolean(customEvent.detail.message),
+            });
 
             this.updateStatus(statusElement, customEvent.detail);
         });

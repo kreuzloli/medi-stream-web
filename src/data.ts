@@ -28,57 +28,43 @@ export const defaultBanners: Banner[] = [
 
 export const homeLiveItems: LiveItem[] = [
     {
-        id: "a",
+        id: "live-1",
         label: "今天",
-        time: "10:00",
+        time: "13:20",
         isToday: true,
         title: "会议标题123456789123456",
         status: "LIVE",
     },
     {
-        id: "b",
-        label: "15日",
-        time: "20:00",
+        id: "live-2",
+        label: "今天",
+        time: "13:20",
+        isToday: true,
+        title: "会议标题123456789123456",
+        status: "LIVE",
+    },
+    ...Array.from({ length: 8 }, (_, index) => ({
+        id: `live-${index + 3}`,
+        label: "14日",
+        time: "13:20",
         isToday: false,
         title: "会议标题123456789123456",
-        status: "WAIT",
-        waitText: "2小时",
-    },
-    {
-        id: "c",
-        label: "16日",
-        time: "21:00",
-        isToday: false,
-        title: "会议标题123456789123456",
-        status: "WAIT",
-        waitText: "27小时",
-    },
+        status: "WAIT" as const,
+        waitText: "100小时",
+    })),
 ];
 
-export const homeChoicenessItems: ChoicenessItem[] = [
-    {
-        id: 1,
-        title: "会议标题A123456789123456",
-        latestText: "最新时间1月21日 共20期",
-        minors: ["会议标题123456789123456", "会议标题123456789123456", "会议标题123456789123456"],
-    },
-    {
-        id: 2,
-        title: "会议标题B123456789123456",
-        latestText: "最新时间1月18日 共12期",
-        minors: ["会议标题123456789123456", "会议标题123456789123456", "会议标题123456789123456"],
-    },
-    {
-        id: 3,
-        title: "会议标题C123456789123456",
-        latestText: "最新时间1月21日 共20期",
-        minors: ["会议标题123456789123456", "会议标题123456789123456", "会议标题123456789123456"],
-    },
-];
-
-export const defaultExcellentItems: ExcellentItem[] = Array.from({ length: 8 }, (_, index) => ({
+export const homeChoicenessItems: ChoicenessItem[] = Array.from({ length: 5 }, (_, index) => ({
     id: index + 1,
-    title: "会议标题12345678912345611243466",
+    title: "会议标题123456789123456",
+    cover: schematicUrl,
+    latestText: "最新时间1月11日 共11期",
+    minors: [],
+}));
+
+export const defaultExcellentItems: ExcellentItem[] = Array.from({ length: 4 }, (_, index) => ({
+    id: index + 1,
+    title: "视频标题123456789...",
     cover: schematicUrl,
     badge: "回放",
 }));

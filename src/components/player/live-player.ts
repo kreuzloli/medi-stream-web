@@ -50,6 +50,7 @@ export class LivePlayerComponent extends HTMLElement {
      * connectedCallback 就会执行。
      */
     connectedCallback() {
+        console.info('[live-player] connected');
         this.render();
         void this.initPlayer();
     }
@@ -61,6 +62,7 @@ export class LivePlayerComponent extends HTMLElement {
      * 不然切页面以后，播放器可能还在后台占用资源。
      */
     disconnectedCallback() {
+        console.info('[live-player] disconnected');
         this.destroy();
     }
 
@@ -69,10 +71,12 @@ export class LivePlayerComponent extends HTMLElement {
      */
     private async initPlayer() {
         if (this.player) {
+            console.info('[live-player] init skipped, player exists');
             return;
         }
 
         if (this.initPlayerPromise) {
+            console.info('[live-player] reuse pending init promise');
             await this.initPlayerPromise;
             return;
         }
@@ -90,10 +94,12 @@ export class LivePlayerComponent extends HTMLElement {
         const videoElement = this.querySelector<HTMLVideoElement>('#tc-live-player');
 
         if (!videoElement) {
+            console.warn('[live-player] video element not found');
             return;
         }
 
         try {
+            console.info('[live-player] load TCPlayer script start');
             await LivePlayerComponent.loadTcPlayerScript();
         } catch (error) {
             console.error('TCPlayer script load failed', error);
@@ -102,14 +108,17 @@ export class LivePlayerComponent extends HTMLElement {
         }
 
         if (!this.isConnected) {
+            console.info('[live-player] init stopped, component disconnected');
             return;
         }
 
         if (!window.TCPlayer) {
+            console.error('[live-player] TCPlayer factory missing after script loaded');
             this.dispatchStatus('播放器脚本加载失败', 'error');
             return;
         }
 
+        console.info('[live-player] create TCPlayer instance');
         this.player = window.TCPlayer('tc-live-player', {
             licenseUrl: this.licenseUrl,
             width: '100%',
@@ -129,6 +138,10 @@ export class LivePlayerComponent extends HTMLElement {
      * @param url 真正的直播播放地址，不是 License URL。
      */
     public async play(url: string) {
+        console.info('[live-player] play requested', {
+            hasUrl: Boolean(url),
+        });
+
         if (!this.player) {
             await this.initPlayer();
         }
@@ -141,6 +154,7 @@ export class LivePlayerComponent extends HTMLElement {
         this.player.src(url);
         this.player.play();
 
+        // 状态文案保留完整地址，方便本地排查具体播放源；日志里不打印完整 URL。
         this.dispatchStatus(`正在播放：${url}`, 'success');
     }
 
@@ -149,10 +163,12 @@ export class LivePlayerComponent extends HTMLElement {
      */
     public pause() {
         if (!this.player) {
+            console.warn('[live-player] pause failed, player not initialized');
             this.dispatchStatus('播放器还没有初始化', 'error');
             return;
         }
 
+        console.info('[live-player] pause');
         this.player.pause();
         this.dispatchStatus('已暂停', 'normal');
     }
@@ -162,9 +178,11 @@ export class LivePlayerComponent extends HTMLElement {
      */
     public destroy() {
         if (!this.player) {
+            console.info('[live-player] destroy skipped, player not initialized');
             return;
         }
 
+        console.info('[live-player] destroy');
         this.player.dispose();
         this.player = null;
 
@@ -178,6 +196,11 @@ export class LivePlayerComponent extends HTMLElement {
      * 然后更新自己的状态文案。
      */
     private dispatchStatus(message: string, type: 'normal' | 'success' | 'error') {
+        console.info('[live-player] dispatch status', {
+            type,
+            hasMessage: Boolean(message),
+        });
+
         this.dispatchEvent(
             new CustomEvent('live-player-status', {
                 detail: {
@@ -192,10 +215,12 @@ export class LivePlayerComponent extends HTMLElement {
 
     private static loadTcPlayerScript() {
         if (window.TCPlayer) {
+            console.info('[live-player] TCPlayer script already available');
             return Promise.resolve();
         }
 
         if (LivePlayerComponent.tcPlayerScriptPromise) {
+            console.info('[live-player] reuse TCPlayer script loading promise');
             return LivePlayerComponent.tcPlayerScriptPromise;
         }
 
@@ -203,7 +228,10 @@ export class LivePlayerComponent extends HTMLElement {
             const script = document.createElement('script');
             script.src = tcPlayerUrl;
             script.async = true;
-            script.onload = () => resolve();
+            script.onload = () => {
+                console.info('[live-player] TCPlayer script loaded');
+                resolve();
+            };
             script.onerror = () => reject(new Error(`Failed to load TCPlayer script: ${tcPlayerUrl}`));
             document.head.appendChild(script);
         });
@@ -211,6 +239,9 @@ export class LivePlayerComponent extends HTMLElement {
         return LivePlayerComponent.tcPlayerScriptPromise;
     }
 
+    /**
+     * 渲染播放器容器。
+     */
     private render() {
         this.innerHTML = `
       <style>

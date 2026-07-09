@@ -73,23 +73,31 @@ export class LivePusherComponent extends HTMLElement {
     private initPromise: Promise<void> | null = null;
 
     connectedCallback(): void {
+        console.info('[live-pusher] connected');
         this.render();
         void this.initPusher();
     }
 
     disconnectedCallback(): void {
+        console.info('[live-pusher] disconnected');
         this.destroy();
     }
 
+    /**
+     * 检查当前浏览器是否支持 WebRTC 推流能力。
+     */
     public async checkSupport(): Promise<boolean> {
+        console.info('[live-pusher] check support start');
         await LivePusherComponent.loadTxLivePusherScript();
 
         if (!window.TXLivePusher) {
+            console.error('[live-pusher] TXLivePusher factory missing');
             this.dispatchStatus('TXLivePusher SDK 没有加载成功', 'error');
             return false;
         }
 
         const result = await window.TXLivePusher.checkSupport();
+        console.info('[live-pusher] check support result', result);
 
         if (!result.isWebRTCSupported) {
             this.dispatchStatus('当前浏览器不支持 WebRTC，不能 Web 推流', 'error');
@@ -105,11 +113,15 @@ export class LivePusherComponent extends HTMLElement {
         return true;
     }
 
+    /**
+     * 开启本地采集预览。
+     */
     public async startPreview(options: {
         videoQuality: string;
         audioQuality: string;
         captureMode: 'camera' | 'screen';
     }): Promise<void> {
+        console.info('[live-pusher] start preview requested', options);
         await this.initPusher();
 
         if (!this.pusher) {
@@ -134,6 +146,7 @@ export class LivePusherComponent extends HTMLElement {
 
         try {
             if (options.captureMode === 'screen') {
+                // 屏幕采集和摄像头采集互斥；屏幕模式不需要同时打开麦克风。
                 this.screenStreamId = await this.pusher.startScreenCapture();
                 this.dispatchStatus('屏幕采集已开启', 'success');
                 return;
@@ -149,7 +162,15 @@ export class LivePusherComponent extends HTMLElement {
         }
     }
 
+    /**
+     * 使用 WebRTC 推流地址开始推流。
+     */
     public async startPush(pushUrl: string): Promise<void> {
+        console.info('[live-pusher] start push requested', {
+            hasPushUrl: Boolean(pushUrl),
+            isWebRtc: pushUrl.startsWith('webrtc://'),
+        });
+
         await this.initPusher();
 
         if (!this.pusher) {
@@ -171,22 +192,31 @@ export class LivePusherComponent extends HTMLElement {
         }
     }
 
+    /**
+     * 停止云端推流。
+     */
     public stopPush(): void {
         if (!this.pusher) {
             this.dispatchStatus('推流器还没有初始化', 'error');
             return;
         }
 
+        console.info('[live-pusher] stop push');
         this.pusher.stopPush();
         this.dispatchStatus('推流已停止', 'normal');
     }
 
+    /**
+     * 停止本地采集预览，并清理 SDK 返回的流 ID。
+     */
     public stopPreview(): void {
         if (!this.pusher) {
+            console.info('[live-pusher] stop preview skipped, pusher not initialized');
             return;
         }
 
         if (this.cameraStreamId) {
+            // 优先使用 SDK 返回的 streamId 停止具体采集流，避免影响其他采集源。
             this.pusher.stopCamera(this.cameraStreamId);
             this.cameraStreamId = null;
         } else {
@@ -208,6 +238,9 @@ export class LivePusherComponent extends HTMLElement {
         this.dispatchStatus('采集预览已关闭', 'normal');
     }
 
+    /**
+     * 暂停发送视频画面。
+     */
     public muteVideo(): void {
         if (!this.pusher) {
             return;
@@ -217,6 +250,9 @@ export class LivePusherComponent extends HTMLElement {
         this.dispatchStatus('画面已暂停发送', 'normal');
     }
 
+    /**
+     * 恢复发送视频画面。
+     */
     public resumeVideo(): void {
         if (!this.pusher) {
             return;
@@ -226,6 +262,9 @@ export class LivePusherComponent extends HTMLElement {
         this.dispatchStatus('画面已恢复发送', 'success');
     }
 
+    /**
+     * 暂停发送音频。
+     */
     public muteAudio(): void {
         if (!this.pusher) {
             return;
@@ -235,6 +274,9 @@ export class LivePusherComponent extends HTMLElement {
         this.dispatchStatus('声音已暂停发送', 'normal');
     }
 
+    /**
+     * 恢复发送音频。
+     */
     public resumeAudio(): void {
         if (!this.pusher) {
             return;
@@ -244,12 +286,17 @@ export class LivePusherComponent extends HTMLElement {
         this.dispatchStatus('声音已恢复发送', 'success');
     }
 
+    /**
+     * 销毁推流器并清理本地流状态。
+     */
     public destroy(): void {
         if (!this.pusher) {
+            console.info('[live-pusher] destroy skipped, pusher not initialized');
             return;
         }
 
         try {
+            console.info('[live-pusher] destroy start');
             this.pusher.stopPush();
             this.stopPreview();
             this.pusher.destroy();
@@ -261,12 +308,17 @@ export class LivePusherComponent extends HTMLElement {
         }
     }
 
+    /**
+     * 初始化推流 SDK，避免并发初始化创建多个实例。
+     */
     private async initPusher(): Promise<void> {
         if (this.pusher) {
+            console.info('[live-pusher] init skipped, pusher exists');
             return;
         }
 
         if (this.initPromise) {
+            console.info('[live-pusher] reuse pending init promise');
             await this.initPromise;
             return;
         }
@@ -280,15 +332,20 @@ export class LivePusherComponent extends HTMLElement {
         }
     }
 
+    /**
+     * 实际创建 TXLivePusher 实例并绑定 SDK 观察者。
+     */
     private async doInitPusher(): Promise<void> {
         const previewContainer = this.querySelector<HTMLDivElement>('#tx-live-pusher-preview');
 
         if (!previewContainer) {
+            console.warn('[live-pusher] preview container not found');
             this.dispatchStatus('预览容器没有找到', 'error');
             return;
         }
 
         try {
+            console.info('[live-pusher] load TXLivePusher script start');
             await LivePusherComponent.loadTxLivePusherScript();
         } catch (error) {
             console.error('TXLivePusher script load failed', error);
@@ -297,14 +354,17 @@ export class LivePusherComponent extends HTMLElement {
         }
 
         if (!this.isConnected) {
+            console.info('[live-pusher] init stopped, component disconnected');
             return;
         }
 
         if (!window.TXLivePusher) {
+            console.error('[live-pusher] TXLivePusher factory missing after script loaded');
             this.dispatchStatus('TXLivePusher SDK 没有加载成功', 'error');
             return;
         }
 
+        console.info('[live-pusher] create TXLivePusher instance');
         this.pusher = new window.TXLivePusher();
 
         this.pusher.setRenderView(previewContainer);
@@ -338,12 +398,17 @@ export class LivePusherComponent extends HTMLElement {
         this.dispatchStatus('推流器已准备好', 'success');
     }
 
+    /**
+     * 加载腾讯云 Web 推流 SDK 脚本。
+     */
     private static loadTxLivePusherScript(): Promise<void> {
         if (window.TXLivePusher) {
+            console.info('[live-pusher] TXLivePusher script already available');
             return Promise.resolve();
         }
 
         if (LivePusherComponent.txLivePusherScriptPromise) {
+            console.info('[live-pusher] reuse TXLivePusher script loading promise');
             return LivePusherComponent.txLivePusherScriptPromise;
         }
 
@@ -352,7 +417,10 @@ export class LivePusherComponent extends HTMLElement {
 
             script.src = txLivePusherUrl;
             script.async = true;
-            script.onload = () => resolve();
+            script.onload = () => {
+                console.info('[live-pusher] TXLivePusher script loaded');
+                resolve();
+            };
             script.onerror = () => reject(new Error(`Failed to load TXLivePusher script: ${txLivePusherUrl}`));
 
             document.head.appendChild(script);
@@ -361,7 +429,15 @@ export class LivePusherComponent extends HTMLElement {
         return LivePusherComponent.txLivePusherScriptPromise;
     }
 
+    /**
+     * 通知宿主页面推流状态。
+     */
     private dispatchStatus(message: string, type: PushStatusType): void {
+        console.info('[live-pusher] dispatch status', {
+            type,
+            hasMessage: Boolean(message),
+        });
+
         this.dispatchEvent(
             new CustomEvent('live-pusher-status', {
                 detail: {
@@ -374,7 +450,11 @@ export class LivePusherComponent extends HTMLElement {
         );
     }
 
+    /**
+     * 通知宿主页面 SDK 统计信息。
+     */
     private dispatchStatistics(statistics: object): void {
+        console.info('[live-pusher] dispatch statistics');
         this.dispatchEvent(
             new CustomEvent('live-pusher-statistics', {
                 detail: statistics,
@@ -384,6 +464,9 @@ export class LivePusherComponent extends HTMLElement {
         );
     }
 
+    /**
+     * 从 SDK 异常对象里提取可展示错误文案。
+     */
     private getErrorMessage(error: unknown, fallback: string): string {
         if (error instanceof Error && error.message) {
             return error.message;
@@ -396,6 +479,9 @@ export class LivePusherComponent extends HTMLElement {
         return fallback;
     }
 
+    /**
+     * 渲染推流预览容器。
+     */
     private render(): void {
         this.innerHTML = `
             <style>

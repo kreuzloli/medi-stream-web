@@ -1,17 +1,20 @@
 import accountIcon from "../../assets/icons/account.svg";
-import calendarIcon from "../../assets/icons/calendar-check.svg";
-import folderIcon from "../../assets/icons/folder.svg";
-import historyIcon from "../../assets/icons/clipboard-clock.svg";
 import logoUrl from "../../assets/images/logo_v2.jpg";
 import searchIcon from "../../assets/icons/search.svg";
-import starIcon from "../../assets/icons/star.svg";
 import { defineElement, icon } from "../../utils/utils";
 
+/**
+ * 首页顶部导航栏。
+ */
 export class MediHeader extends HTMLElement {
     connectedCallback(): void {
+        console.info("[header] connected");
         this.render();
     }
 
+    /**
+     * 渲染导航、搜索框和用户入口。
+     */
     private render(): void {
         this.innerHTML = `
             <div class="header-shell">
@@ -23,8 +26,10 @@ export class MediHeader extends HTMLElement {
                         <nav class="header-nav">
                             <a href="/" class="active">首页</a>
                             <a href="/topics">精选专题</a>
-                            <a href="/review">精彩回顾</a>
+                            <a href="/training">科研培训</a>
+                            <a href="/certificates">证书查询</a>
                             <a href="/videos">科普视频</a>
+                            <a href="/about">关于我们</a>
                         </nav>
                     </div>
 
@@ -38,10 +43,6 @@ export class MediHeader extends HTMLElement {
                     </div>
 
                     <div class="header-right">
-                        ${this.actionButton(historyIcon, "历史记录")}
-                        ${this.actionButton(starIcon, "收藏")}
-                        ${this.actionButton(folderIcon, "文件夹")}
-                        ${this.actionButton(calendarIcon, "日历")}
                         <div class="header-container">
                             <button class="header-btn header-user-info" type="button" aria-label="用户" title="用户">
                                 ${icon(accountIcon)}
@@ -50,14 +51,6 @@ export class MediHeader extends HTMLElement {
                     </div>
                 </div>
             </div>
-        `;
-    }
-
-    private actionButton(iconUrl: string, title: string): string {
-        return `
-            <button class="header-btn header-action" type="button" aria-label="${title}" title="${title}">
-                ${icon(iconUrl)}
-            </button>
         `;
     }
 }

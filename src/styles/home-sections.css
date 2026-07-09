@@ -1,0 +1,69 @@
+.live-align {
+    width: 100%;
+    max-width: 1320px;
+    margin: 0 auto 50px;
+}
+
+.live-align h1 {
+    margin-top: 50px;
+}
+
+.live-title-wrap {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 80px;
+}
+
+.live-title-wrap .live-title-medi,
+.live-title-wrap .live-title-choiceness,
+.live-title-wrap .live-title-excellent {
+    position: relative;
+    padding-left: 14px;
+}
+
+.live-title-wrap .live-title-medi::before,
+.live-title-wrap .live-title-choiceness::before,
+.live-title-wrap .live-title-excellent::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 28px;
+    background: #3f6af6;
+    border-radius: 2px;
+}
+
+.btn-more-live,
+.btn-more-choiceness,
+.btn-more-excellent {
+    position: relative;
+    top: 20px;
+    background: #eceef0;
+    width: 100px;
+    height: 30px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border: none;
+}
+
+.btn-more-live strong,
+.btn-more-choiceness strong,
+.btn-more-excellent strong {
+    font-weight: 800;
+}
+
+.btn-more-live:hover,
+.btn-more-choiceness:hover,
+.btn-more-excellent:hover {
+    color: #2f6bff;
+}

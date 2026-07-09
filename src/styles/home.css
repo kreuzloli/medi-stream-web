@@ -1,0 +1,30 @@
+.app-home {
+    max-width: 1320px;
+    margin: 18px auto 0;
+    padding: 0 18px;
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 25px;
+    align-items: start;
+}
+
+.app-left,
+.app-right,
+.banner-wrap,
+.banner {
+    min-width: 0;
+}
+
+.app-right {
+    display: flex;
+    justify-content: center;
+}
+
+.banner-wrap {
+    width: 100%;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 26px rgba(17, 24, 39, 0.08);
+    overflow: hidden;
+    padding: 10px;
+}

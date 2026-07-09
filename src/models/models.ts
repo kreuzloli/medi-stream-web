@@ -57,6 +57,12 @@ export type ExcellentItem = {
     href?: string;
 };
 
+export type HomeContent = {
+    liveItems: LiveItem[];
+    choicenessItems: ChoicenessItem[];
+    excellentItems: ExcellentItem[];
+};
+
 export type ApiResponse<T> = {
     code?: number;
     message?: string;

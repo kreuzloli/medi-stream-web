@@ -1,0 +1,65 @@
+.excellent-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.excellent-card-cell {
+    width: 100%;
+    margin-top: 24px;
+}
+
+.excellent-card__body {
+    margin: auto;
+    position: relative;
+    width: 70%;
+    height: 140px;
+    overflow: hidden;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.excellent-card__body > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+}
+
+.excellent-card__title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 4px 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    z-index: 2;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
+}
+
+.excellent-card__titlefont {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 90%;
+}
+
+.excellent-card__badge {
+    position: absolute;
+    left: 10px;
+    top: 7px;
+    border-radius: 10px;
+    padding: 4px 8px;
+    min-width: 42px;
+    height: 18px;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 10px;
+    text-align: center;
+    color: #fff;
+    z-index: 2;
+    background-color: #91db8f;
+}

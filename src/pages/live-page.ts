@@ -6,12 +6,19 @@ type LivePlayerStatus = {
     type: 'normal' | 'success' | 'error';
 };
 
+/**
+ * 普通直播播放测试页。
+ */
 export class LivePage extends HTMLElement {
     connectedCallback() {
+        console.info('[live-page] connected');
         this.render();
         this.bindEvents();
     }
 
+    /**
+     * 绑定播放、暂停、销毁按钮和播放器状态事件。
+     */
     private bindEvents() {
         const livePlayer = this.querySelector<LivePlayerComponent>('live-player');
         const inputElement = this.querySelector<HTMLInputElement>('#live-url-input');
@@ -28,11 +35,16 @@ export class LivePage extends HTMLElement {
             !destroyButton ||
             !statusElement
         ) {
+            console.warn('[live-page] bind events failed, element missing');
             return;
         }
 
         playButton.addEventListener('click', () => {
             const liveUrl = inputElement.value.trim();
+
+            console.info('[live-page] play clicked', {
+                hasLiveUrl: Boolean(liveUrl),
+            });
 
             if (!liveUrl) {
                 this.updateStatus(statusElement, {
@@ -46,10 +58,12 @@ export class LivePage extends HTMLElement {
         });
 
         pauseButton.addEventListener('click', () => {
+            console.info('[live-page] pause clicked');
             livePlayer.pause();
         });
 
         destroyButton.addEventListener('click', () => {
+            console.info('[live-page] destroy clicked');
             livePlayer.destroy();
         });
 
@@ -64,10 +78,17 @@ export class LivePage extends HTMLElement {
         livePlayer.addEventListener('live-player-status', (event) => {
             const customEvent = event as CustomEvent<LivePlayerStatus>;
 
+            console.info('[live-page] player status', {
+                type: customEvent.detail.type,
+                hasMessage: Boolean(customEvent.detail.message),
+            });
             this.updateStatus(statusElement, customEvent.detail);
         });
     }
 
+    /**
+     * 同步播放器状态文案和状态颜色。
+     */
     private updateStatus(
         statusElement: HTMLParagraphElement,
         status: LivePlayerStatus,
@@ -87,6 +108,9 @@ export class LivePage extends HTMLElement {
         statusElement.className = 'live-status';
     }
 
+    /**
+     * 渲染播放测试页。
+     */
     private render() {
         this.innerHTML = `
       <style>

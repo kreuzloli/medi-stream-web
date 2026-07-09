@@ -10,6 +10,9 @@ type LivePusherStatus = {
 
 type CaptureMode = 'camera' | 'screen';
 
+/**
+ * Web 推流控制页面。
+ */
 class LivePusherPage extends HTMLElement {
     private status: LivePusherStatus = {
         message: '等待初始化推流器',
@@ -19,10 +22,14 @@ class LivePusherPage extends HTMLElement {
     private statisticsText = '暂无推流统计';
 
     connectedCallback(): void {
+        console.info('[live-pusher-page] connected');
         this.render();
         this.bindEvents();
     }
 
+    /**
+     * 绑定推流控制按钮和推流组件事件。
+     */
     private bindEvents(): void {
         const pusher = this.querySelector<LivePusherComponent>('live-pusher');
         const pushUrlInput = this.querySelector<HTMLInputElement>('#push-url-input');
@@ -57,10 +64,12 @@ class LivePusherPage extends HTMLElement {
             !muteAudioButton ||
             !resumeAudioButton
         ) {
+            console.warn('[live-pusher-page] bind events failed, element missing');
             return;
         }
 
         checkButton.addEventListener('click', () => {
+            console.info('[live-pusher-page] check support clicked');
             void pusher.checkSupport();
         });
 
@@ -68,6 +77,12 @@ class LivePusherPage extends HTMLElement {
             const videoQuality = videoQualitySelect.value;
             const audioQuality = audioQualitySelect.value;
             const captureMode = captureModeSelect.value as CaptureMode;
+
+            console.info('[live-pusher-page] start preview clicked', {
+                videoQuality,
+                audioQuality,
+                captureMode,
+            });
 
             void pusher.startPreview({
                 videoQuality,
@@ -77,11 +92,17 @@ class LivePusherPage extends HTMLElement {
         });
 
         stopPreviewButton.addEventListener('click', () => {
+            console.info('[live-pusher-page] stop preview clicked');
             pusher.stopPreview();
         });
 
         pushButton.addEventListener('click', () => {
             const pushUrl = pushUrlInput.value.trim();
+
+            console.info('[live-pusher-page] start push clicked', {
+                hasPushUrl: Boolean(pushUrl),
+                isWebRtc: pushUrl.startsWith('webrtc://'),
+            });
 
             if (!pushUrl) {
                 this.updateStatus({
@@ -103,28 +124,37 @@ class LivePusherPage extends HTMLElement {
         });
 
         stopPushButton.addEventListener('click', () => {
+            console.info('[live-pusher-page] stop push clicked');
             pusher.stopPush();
         });
 
         muteVideoButton.addEventListener('click', () => {
+            console.info('[live-pusher-page] mute video clicked');
             pusher.muteVideo();
         });
 
         resumeVideoButton.addEventListener('click', () => {
+            console.info('[live-pusher-page] resume video clicked');
             pusher.resumeVideo();
         });
 
         muteAudioButton.addEventListener('click', () => {
+            console.info('[live-pusher-page] mute audio clicked');
             pusher.muteAudio();
         });
 
         resumeAudioButton.addEventListener('click', () => {
+            console.info('[live-pusher-page] resume audio clicked');
             pusher.resumeAudio();
         });
 
         pusher.addEventListener('live-pusher-status', (event) => {
             const customEvent = event as CustomEvent<LivePusherStatus>;
 
+            console.info('[live-pusher-page] pusher status', {
+                type: customEvent.detail.type,
+                hasMessage: Boolean(customEvent.detail.message),
+            });
             this.updateStatus(customEvent.detail);
         });
 
@@ -132,16 +162,21 @@ class LivePusherPage extends HTMLElement {
             const customEvent = event as CustomEvent<object>;
 
             this.statisticsText = JSON.stringify(customEvent.detail, null, 2);
+            console.info('[live-pusher-page] pusher statistics updated');
             this.updateStatistics();
         });
     }
 
+    /**
+     * 更新页面状态条。
+     */
     private updateStatus(status: LivePusherStatus): void {
         this.status = status;
 
         const statusElement = this.querySelector<HTMLParagraphElement>('#push-status');
 
         if (!statusElement) {
+            console.warn('[live-pusher-page] status element missing');
             return;
         }
 
@@ -160,16 +195,23 @@ class LivePusherPage extends HTMLElement {
         statusElement.className = 'push-status';
     }
 
+    /**
+     * 更新 SDK 统计信息区域。
+     */
     private updateStatistics(): void {
         const statisticsElement = this.querySelector<HTMLPreElement>('#push-statistics');
 
         if (!statisticsElement) {
+            console.warn('[live-pusher-page] statistics element missing');
             return;
         }
 
         statisticsElement.textContent = this.statisticsText;
     }
 
+    /**
+     * 渲染推流控制页面。
+     */
     private render(): void {
         this.innerHTML = `
             <div class="App">

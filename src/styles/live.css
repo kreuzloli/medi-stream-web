@@ -1,0 +1,156 @@
+.live-list {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 22px;
+    row-gap: 22px;
+    margin-top: 12px;
+}
+
+.live-item {
+    display: grid;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.timeline-node {
+    position: relative;
+    height: 60px;
+}
+
+.timeline-line {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: 999px;
+    background: #e7e8ea;
+}
+
+.timeline-pill {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 28px;
+    clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #cfd3d8;
+    color: #111;
+    font-weight: 900;
+}
+
+.timeline-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.is-today .timeline-icon {
+    filter: invert(35%) sepia(99%) saturate(4122%) hue-rotate(347deg) brightness(106%) contrast(106%);
+}
+
+.is-future .timeline-icon {
+    filter: invert(38%) sepia(92%) saturate(3164%) hue-rotate(220deg) brightness(101%) contrast(101%);
+}
+
+.timeline-time {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #111;
+    font-size: 16px;
+    font-weight: 900;
+}
+
+.live-card-cell {
+    width: 100%;
+}
+
+.live-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 12px 26px rgba(17, 24, 39, 0.12);
+    overflow: hidden;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.live-card__cover {
+    position: relative;
+    height: 126px;
+    background: #eef0f3;
+}
+
+.live-card__cover > img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    display: block;
+}
+
+.live-card__badge,
+.live-card__badge_wait {
+    display: inline-flex;
+    align-items: center;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    color: #fff;
+    font-weight: 900;
+    font-size: 12px;
+}
+
+.live-card__badge {
+    gap: 2px;
+    padding: 2px 10px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #cd37be 0%, #6867e8 100%);
+}
+
+.live-card__video {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+}
+
+.live-card__badge__title {
+    padding: 2px 10px;
+    background-color: #2f6bff;
+    border-radius: 6px 0 0 6px;
+}
+
+.live-card__badge__time {
+    padding: 2px 10px;
+    background: linear-gradient(60deg, #000 0%, #6867e8 100%);
+}
+
+.live-card__body {
+    padding: 14px 10px 18px;
+    display: grid;
+    gap: 16px;
+}
+
+.live-card__title {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: #111;
+    word-break: break-word;
+}
+
+.live-card__btn {
+    height: 28px;
+    border: 0;
+    border-radius: 8px;
+    background: #2f6bff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+}

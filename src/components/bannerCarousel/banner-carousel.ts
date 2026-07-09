@@ -2,6 +2,9 @@ import { defaultBanners } from "../../data";
 import type { Banner } from "../../models/models";
 import { defineElement, escapeHtml } from "../../utils/utils";
 
+/**
+ * 首页顶部轮播组件。
+ */
 export class MediBannerCarousel extends HTMLElement {
     private _banners: Banner[] = defaultBanners;
     private activeIndex = 0;
@@ -9,15 +12,24 @@ export class MediBannerCarousel extends HTMLElement {
     set banners(value: Banner[] | undefined) {
         this._banners = value ?? defaultBanners;
         this.activeIndex = 0;
+        console.info("[banner] banners updated", {
+            count: this._banners.length,
+            useFallback: !value,
+        });
         this.render();
     }
 
     connectedCallback(): void {
+        console.info("[banner] connected");
         this.render();
     }
 
+    /**
+     * 渲染当前轮播图，并在多图时绑定切换按钮。
+     */
     private render(): void {
         if (this._banners.length === 0) {
+            console.warn("[banner] empty banners");
             this.innerHTML = `
                 <div class="banner banner-empty">
                     <div class="banner-empty__text">暂无轮播内容</div>
@@ -62,13 +74,23 @@ export class MediBannerCarousel extends HTMLElement {
         this.querySelectorAll<HTMLElement>(".banner-dot").forEach((dot) => {
             dot.addEventListener("click", () => {
                 this.activeIndex = Number(dot.dataset.index);
+                console.info("[banner] dot clicked", {
+                    activeIndex: this.activeIndex,
+                });
                 this.render();
             });
         });
     }
 
+    /**
+     * 前后切换轮播图；取模保证第一张和最后一张可以闭环切换。
+     */
     private move(delta: number): void {
         this.activeIndex = (this.activeIndex + this._banners.length + delta) % this._banners.length;
+        console.info("[banner] move", {
+            delta,
+            activeIndex: this.activeIndex,
+        });
         this.render();
     }
 }
