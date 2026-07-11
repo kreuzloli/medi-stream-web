@@ -1,5 +1,6 @@
 import '../../libs/tcplayer/tcplayer.min.css';
 import tcPlayerUrl from '../../libs/tcplayer/tcplayer.v5.3.3.min.js?url';
+import { API_BASE } from '../../services/api';
 
 type TCPlayerInstance = {
     src: (url: string) => void;
@@ -39,8 +40,7 @@ export class LivePlayerComponent extends HTMLElement {
 
     private initPlayerPromise: Promise<void> | null = null;
 
-    private readonly licenseUrl =
-        'https://1256203008.trtcube-license.cn/license/v2/1256203008_1/v_cube.license';
+    private readonly licenseUrl = `${API_BASE}/live/license`;
 
     /**
      * Web Component 被插入页面时触发。
