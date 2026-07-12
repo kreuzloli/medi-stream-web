@@ -10,7 +10,14 @@ export class MediHeader extends HTMLElement {
     connectedCallback(): void {
         console.info("[header] connected");
         this.render();
+        window.addEventListener("hashchange", this.handleRouteChange);
     }
+
+    disconnectedCallback(): void {
+        window.removeEventListener("hashchange", this.handleRouteChange);
+    }
+
+    private readonly handleRouteChange = (): void => this.render();
 
     /**
      * 渲染导航、搜索框和用户入口。
@@ -24,12 +31,12 @@ export class MediHeader extends HTMLElement {
                             <img alt="medi-stream" src="${logoUrl}">
                         </div>
                         <nav class="header-nav">
-                            <a href="/" class="active">首页</a>
-                            <a href="/topics">精选专题</a>
-                            <a href="/training">科研培训</a>
-                            <a href="/certificates">证书查询</a>
-                            <a href="/videos">科普视频</a>
-                            <a href="/about">关于我们</a>
+                            ${this.navLink("/", "首页")}
+                            ${this.navLink("/topics", "精选专题")}
+                            ${this.navLink("/training", "科研培训")}
+                            ${this.navLink("/certificates", "证书查询")}
+                            ${this.navLink("/videos", "科普视频")}
+                            ${this.navLink("/about", "关于我们")}
                         </nav>
                     </div>
 
@@ -52,6 +59,20 @@ export class MediHeader extends HTMLElement {
                 </div>
             </div>
         `;
+    }
+
+    /**
+     * 使用 hash 链接保持与项目路由器一致，并按当前栏目计算激活状态。
+     */
+    private navLink(path: string, label: string): string {
+        const currentPath = location.hash.replace(/^#/, "").split("?")[0] || "/";
+        const sectionPath = path === "/" ? "/" : currentPath;
+        const isCertificateDetail = path === "/certificates" && sectionPath === "/certificate-detail";
+        const active = path === "/"
+            ? sectionPath === "/"
+            : sectionPath === path || sectionPath.startsWith(`${path}-`) || isCertificateDetail;
+
+        return `<a href="#${path}" class="${active ? "active" : ""}">${label}</a>`;
     }
 }
 

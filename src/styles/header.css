@@ -135,3 +135,40 @@
     padding-left: 18px;
     padding-right: 8px;
 }
+
+@media (max-width: 900px) {
+    .header {
+        height: auto;
+        min-height: 72px;
+        padding: 10px 12px;
+        gap: 12px;
+        overflow-x: auto;
+    }
+
+    .header-left {
+        min-width: max-content;
+        gap: 12px;
+    }
+
+    .header-logo img {
+        width: 90px;
+    }
+
+    .header-nav {
+        gap: 12px;
+        font-size: 14px;
+    }
+
+    .header-center {
+        display: none;
+    }
+
+    .header-right {
+        min-width: 48px;
+    }
+
+    .header-user-info .svg-icon {
+        width: 42px;
+        height: 42px;
+    }
+}

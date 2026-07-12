@@ -1,0 +1,400 @@
+.content-app {
+    display: flex;
+    flex-direction: column;
+}
+
+.content-main {
+    width: 100%;
+    max-width: 1320px;
+    margin: 22px auto 90px;
+    padding: 0 18px;
+    flex: 1;
+}
+
+.content-banner {
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.content-title-row {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.content-title {
+    position: relative;
+    margin: 0;
+    padding-left: 12px;
+    font-size: 26px;
+}
+
+.content-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 4px;
+    height: 28px;
+    background: #2f6bff;
+    transform: translateY(-50%);
+}
+
+.content-action,
+.training-row button,
+.certificate-form button {
+    border: 0;
+    color: #fff;
+    background: #2f6bff;
+    cursor: pointer;
+}
+
+.content-action {
+    padding: 7px 18px;
+    background: #082b73;
+    font-weight: 700;
+}
+
+.content-error,
+.content-loading {
+    min-height: 360px;
+    display: grid;
+    place-items: center;
+    padding: 30px;
+    color: #b42318;
+    background: #fff;
+    font-size: 18px;
+}
+
+.content-loading {
+    color: #586174;
+}
+
+.demo-data-notice {
+    padding: 9px 16px;
+    color: #7a4b00;
+    background: #fff4d6;
+    text-align: center;
+    font-size: 14px;
+}
+
+.topic-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 38px 34px;
+}
+
+.topic-card {
+    overflow: hidden;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.1);
+}
+
+.topic-card__cover {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.topic-card__body {
+    padding: 12px;
+}
+
+.topic-card h2 {
+    min-height: 52px;
+    margin: 0;
+    font-size: 19px;
+    line-height: 1.35;
+}
+
+.topic-card__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    margin: 9px -12px;
+    padding: 6px 12px;
+    color: #586174;
+    background: #f4f5f7;
+    font-size: 12px;
+}
+
+.topic-card__follow {
+    flex: none;
+    padding: 2px 8px;
+    border-radius: 10px;
+    color: #fff;
+    background: #2f6bff;
+}
+
+.topic-card ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    line-height: 1.8;
+}
+
+.topic-card li:first-child {
+    color: #2f6bff;
+}
+
+.training-list {
+    background: transparent;
+}
+
+.training-row {
+    min-height: 190px;
+    display: grid;
+    grid-template-columns: 285px 1fr 160px;
+    gap: 34px;
+    align-items: center;
+    padding: 22px 0;
+    border-bottom: 2px solid #d9dde5;
+}
+
+.training-row > img {
+    width: 285px;
+    height: 160px;
+    object-fit: cover;
+}
+
+.training-row h2 {
+    margin: 0 0 10px;
+    font-size: 22px;
+}
+
+.training-row p {
+    margin: 0;
+    color: #555;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.training-row button {
+    width: 150px;
+    height: 34px;
+    border-radius: 17px;
+    font-weight: 700;
+}
+
+.training-article {
+    min-height: 1300px;
+    padding: 70px 52px;
+    background: #fff;
+    font-size: 20px;
+    line-height: 1.45;
+}
+
+.training-article header {
+    padding: 0 30px 36px;
+    border-bottom: 2px solid #e5e7eb;
+    text-align: center;
+}
+
+.training-article header h2 {
+    max-width: 1000px;
+    margin: 0 auto 25px;
+    font-size: 30px;
+}
+
+.training-article__paragraph {
+    white-space: pre-line;
+}
+
+.training-article figure {
+    margin: 35px auto;
+    text-align: center;
+}
+
+.training-article figure img {
+    display: block;
+    width: min(760px, 100%);
+    margin: 0 auto;
+}
+
+.training-article figcaption {
+    margin-top: 8px;
+    color: #555;
+}
+
+.training-related {
+    color: #2f6bff;
+    text-decoration: none;
+}
+
+.certificate-form-panel {
+    min-height: 550px;
+    display: grid;
+    place-items: start center;
+    padding-top: 80px;
+    background: #fff;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
+}
+
+.certificate-form {
+    width: 600px;
+    text-align: center;
+}
+
+.certificate-form label {
+    display: grid;
+    grid-template-columns: 190px 1fr;
+    align-items: center;
+    margin-bottom: 22px;
+    font-size: 22px;
+    font-weight: 700;
+    text-align: right;
+}
+
+.certificate-form input {
+    height: 46px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: #eef0f3;
+    padding: 0 14px;
+    font-size: 17px;
+}
+
+.certificate-form input:focus {
+    border-color: #2f6bff;
+    outline: none;
+}
+
+.certificate-message {
+    min-height: 24px;
+    color: #d33;
+}
+
+.certificate-form button {
+    width: 210px;
+    height: 50px;
+    border-radius: 8px;
+    font-size: 24px;
+    font-weight: 700;
+    box-shadow: 0 4px 7px rgba(15, 23, 42, 0.25);
+}
+
+.certificate-result {
+    width: 1050px;
+    margin: 70px auto 350px;
+    color: #0b2e73;
+    background: #fff;
+    box-shadow: 0 9px 25px rgba(15, 23, 42, 0.1);
+}
+
+.certificate-result h2,
+.certificate-result caption,
+.certificate-section {
+    color: #fff;
+    background: #082b73;
+}
+
+.certificate-result h2 {
+    margin: 0;
+    padding: 24px 0 10px;
+    text-align: center;
+}
+
+.certificate-result table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 20px;
+}
+
+.certificate-result caption {
+    padding: 10px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.certificate-result th,
+.certificate-result td {
+    height: 44px;
+    padding: 7px 18px;
+    border: 1px solid #d9dde5;
+    text-align: center;
+}
+
+.certificate-result th {
+    width: 38%;
+}
+
+@media (max-width: 900px) {
+    .App {
+        min-width: 0;
+    }
+
+    .content-main {
+        margin-top: 12px;
+        padding: 0 12px;
+    }
+
+    .content-title-row {
+        min-height: 76px;
+    }
+
+    .topic-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px 12px;
+    }
+
+    .training-row {
+        grid-template-columns: 120px 1fr;
+        gap: 14px;
+    }
+
+    .training-row > img {
+        width: 120px;
+        height: 80px;
+    }
+
+    .training-row h2 {
+        font-size: 15px;
+    }
+
+    .training-row p {
+        font-size: 14px;
+    }
+
+    .training-row button {
+        grid-column: 2;
+    }
+
+    .training-article {
+        min-height: 700px;
+        padding: 28px 18px;
+        font-size: 16px;
+    }
+
+    .training-article header h2 {
+        font-size: 22px;
+    }
+
+    .certificate-form-panel {
+        min-height: 450px;
+        padding: 50px 18px 0;
+    }
+
+    .certificate-form {
+        width: 100%;
+    }
+
+    .certificate-form label {
+        grid-template-columns: 115px 1fr;
+        font-size: 16px;
+    }
+
+    .certificate-result {
+        width: 100%;
+        margin: 40px auto 180px;
+        overflow-x: auto;
+    }
+
+    .certificate-result table {
+        min-width: 650px;
+        font-size: 15px;
+    }
+}

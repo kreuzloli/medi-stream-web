@@ -33,6 +33,26 @@ const routes: RouteConfig[] = [
         path: '/wechat-live-play',
         component: 'wechat-live-page',
     },
+    {
+        path: '/topics',
+        component: 'topics-page',
+    },
+    {
+        path: '/training',
+        component: 'training-list-page',
+    },
+    {
+        path: '/training-detail',
+        component: 'training-detail-page',
+    },
+    {
+        path: '/certificates',
+        component: 'certificate-query-page',
+    },
+    {
+        path: '/certificate-detail',
+        component: 'certificate-detail-page',
+    },
 ];
 
 /**

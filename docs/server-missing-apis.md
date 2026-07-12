@@ -177,6 +177,195 @@
 - 如果某一块暂无数据，返回空数组即可，前端会对该块 fallback。
 - 建议后端按业务状态过滤掉禁用、下架、过期内容。
 
+### 3. 获取精选专题列表
+
+- 前端调用位置：`src/services/content.ts`
+- 前端页面：`#/topics`
+- 请求方式：`GET`
+- 前端请求路径：`/api/topics`
+- Rust 服务路由建议：`/topics`
+- 当前 fallback：接口失败、404 或返回空数组时使用 25 条本地专题数据。
+
+#### 响应格式
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "topics": [
+      {
+        "id": 1,
+        "title": "专题标题",
+        "cover": "https://example.com/topic.jpg",
+        "latestText": "最新时间1月11日 共11期",
+        "followed": true,
+        "minors": ["子主题一", "子主题二", "子主题三"]
+      }
+    ]
+  }
+}
+```
+
+`data` 也可以直接返回数组，或使用 `items`、`list` 字段。
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `id` | `number` | 是 | 专题唯一标识。 |
+| `title` | `string` | 是 | 专题标题。 |
+| `cover` | `string` | 否 | 专题封面。 |
+| `latestText` | `string` | 是 | 最新一期和总期数展示文本。 |
+| `followed` | `boolean` | 是 | 当前用户是否已关注。 |
+| `minors` | `string[]` | 是 | 卡片下方最多展示三条子主题。 |
+
+### 4. 获取科研培训列表
+
+- 前端调用位置：`src/services/content.ts`
+- 前端页面：`#/training`
+- 请求方式：`GET`
+- 前端请求路径：`/api/trainings`
+- Rust 服务路由建议：`/trainings`
+- 当前 fallback：接口失败、404 或返回空数组时使用本地培训列表。
+
+#### 响应格式
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "trainings": [
+      {
+        "id": "training-1",
+        "title": "培训通知标题",
+        "date": "2026-7-7",
+        "cover": "https://example.com/training.jpg"
+      }
+    ]
+  }
+}
+```
+
+`data` 也可以直接返回数组，或使用 `items`、`list` 字段。建议按发布日期倒序返回。
+
+### 5. 获取科研培训详情
+
+- 前端调用位置：`src/services/content.ts`
+- 前端页面：`#/training-detail?id=<id>`
+- 请求方式：`GET`
+- 前端请求路径：`/api/trainings/{id}`
+- Rust 服务路由建议：`/trainings/:id`
+- 当前 fallback：请求失败或响应格式不正确时展示本地文章。
+
+#### Path 参数
+
+| 参数 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| `id` | `string` | 是 | 培训内容唯一标识。 |
+
+#### 响应格式
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "id": "training-1",
+    "title": "培训通知标题",
+    "date": "2026-7-7",
+    "cover": "https://example.com/training-cover.jpg",
+    "source": "柳翠",
+    "paragraphs": ["第一段正文", "第二段正文"],
+    "contentImage": "https://example.com/article-image.jpg",
+    "imageCaption": "图：培训主视觉",
+    "relatedLink": "https://example.com/service",
+    "relatedLinkText": "相关链接：如何获取培训服务"
+  }
+}
+```
+
+详情也可以包装在 `training`、`detail` 或 `item` 字段中。`paragraphs` 应按页面展示顺序返回，不建议把未经清洗的 HTML 直接交给前端。
+
+### 6. 查询证书
+
+- 前端调用位置：`src/services/content.ts`
+- 前端页面：`#/certificates`
+- 请求方式：`POST`
+- 前端请求路径：`/api/certificates/query`
+- Rust 服务路由建议：`/certificates/query`
+- `Content-Type`：`application/json`
+- 当前 fallback：临时接口无法连接时进入带“演示数据”提示的示例详情；后端明确返回 404 时按“未查到”展示错误，不伪造查询成功。
+
+#### 请求体
+
+```json
+{
+  "name": "郭靖",
+  "idNumber": "22010419860812131X",
+  "phone": "13800000000"
+}
+```
+
+三个字段均为必填。后端必须同时匹配姓名、身份证号和手机号，不应仅凭单一字段返回证书。
+
+#### 查询成功
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "certificateId": "certificate-1"
+  }
+}
+```
+
+`data` 也可以包装在 `result`、`detail` 或 `item` 字段中。
+
+#### 未查到
+
+建议返回 `404`，响应示例：
+
+```json
+{
+  "code": 404,
+  "message": "未查询到匹配的证书",
+  "data": null
+}
+```
+
+### 7. 获取证书详情
+
+- 前端调用位置：`src/services/content.ts`
+- 前端页面：`#/certificate-detail?id=<id>`
+- 请求方式：`GET`
+- 前端请求路径：`/api/certificates/{id}`
+- Rust 服务路由建议：`/certificates/:id`
+- 当前 fallback：仅从查询页进入显式演示流程时展示示例证书；正常详情请求失败或响应格式不正确时展示页面内错误状态。
+
+#### 响应格式
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "certificate": {
+      "id": "certificate-1",
+      "name": "郭靖",
+      "gender": "男",
+      "idNumber": "22010419860812131X",
+      "certificateName": "2026年GCP及伦理审查提升培训班",
+      "certificateNumber": "FDSA-GCP202605243284",
+      "issueDate": "2026-05-24",
+      "level": "无"
+    }
+  }
+}
+```
+
+详情也可以直接放在 `data` 中，或包装在 `detail`、`item` 字段中。证书查询涉及个人信息，后端日志不要打印完整身份证号和手机号，接口应结合现有认证、访问频控和审计策略。
+
 ## 已确认已有或不属于本次缺口的接口
 
 以下接口前端当前会用到，但 `medi-stream-rust` 当前路由表已存在，不列为待实现：
@@ -194,6 +383,7 @@
 - `[home] fetch home content success`
 - `[home-page] load banners success`
 - `[home-page] load home content success`
+- `[content-api] request success`
 
 本地构建验证：
 

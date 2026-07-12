@@ -63,6 +63,52 @@ export type HomeContent = {
     excellentItems: ExcellentItem[];
 };
 
+export type TopicItem = {
+    id: number;
+    title: string;
+    cover?: string;
+    latestText: string;
+    followed: boolean;
+    minors: string[];
+};
+
+export type TrainingItem = {
+    id: string;
+    title: string;
+    date: string;
+    cover?: string;
+};
+
+export type TrainingDetail = TrainingItem & {
+    source: string;
+    paragraphs: string[];
+    contentImage?: string;
+    imageCaption?: string;
+    relatedLink?: string;
+    relatedLinkText?: string;
+};
+
+export type CertificateQuery = {
+    name: string;
+    idNumber: string;
+    phone: string;
+};
+
+export type CertificateQueryResult = {
+    certificateId: string;
+};
+
+export type CertificateDetail = {
+    id: string;
+    name: string;
+    gender: string;
+    idNumber: string;
+    certificateName: string;
+    certificateNumber: string;
+    issueDate: string;
+    level: string;
+};
+
 export type ApiResponse<T> = {
     code?: number;
     message?: string;

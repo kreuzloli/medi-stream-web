@@ -47,6 +47,23 @@ export class MediChoicenessList extends HTMLElement {
                 ${content}
             </div>
         `;
+
+        this.querySelector(".btn-more-choiceness")?.addEventListener("click", () => {
+            location.hash = "/topics";
+        });
+
+        this.querySelectorAll<HTMLElement>(".choiceness-card").forEach((card) => {
+            const openTopics = () => {
+                location.hash = "/topics";
+            };
+            card.addEventListener("click", openTopics);
+            card.addEventListener("keydown", (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    openTopics();
+                }
+            });
+        });
     }
 
     /**
@@ -63,7 +80,7 @@ export class MediChoicenessList extends HTMLElement {
     private card(item: ChoicenessItem): string {
         return `
             <div class="choiceness-card-cell">
-                <div class="choiceness-card">
+                <div class="choiceness-card" role="link" tabindex="0">
                     <div class="choiceness-card__cover">
                         <img src="${item.cover ?? schematicUrl}" alt="">
                     </div>
