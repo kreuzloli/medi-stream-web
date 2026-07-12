@@ -55,7 +55,11 @@ abstract class ContentPage extends HTMLElement {
     }
 
     protected applyBanners(): void {
-        const banner = this.querySelector("medi-banner-carousel") as HTMLElement & { banners?: Banner[] };
+        const banner = this.querySelector("medi-banner-carousel") as HTMLElement & {
+            banners?: Banner[];
+            displayMode?: "home" | "content";
+        };
+        banner.displayMode = "content";
         banner.banners = this.banners;
     }
 

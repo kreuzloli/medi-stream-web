@@ -7,6 +7,7 @@ import { defineElement, escapeHtml } from "../../utils/utils";
  */
 export class MediBannerCarousel extends HTMLElement {
     private _banners: Banner[] = defaultBanners;
+    private _displayMode: "home" | "content" = "home";
     private activeIndex = 0;
 
     set banners(value: Banner[] | undefined) {
@@ -16,6 +17,11 @@ export class MediBannerCarousel extends HTMLElement {
             count: this._banners.length,
             useFallback: !value,
         });
+        this.render();
+    }
+
+    set displayMode(value: "home" | "content" | undefined) {
+        this._displayMode = value ?? "home";
         this.render();
     }
 
@@ -40,10 +46,16 @@ export class MediBannerCarousel extends HTMLElement {
 
         const banner = this._banners[this.activeIndex] ?? this._banners[0];
         const image = `<img class="banner-img" src="${banner.img}" alt="${escapeHtml(banner.alt ?? "")}">`;
+        const backdrop = this._displayMode === "content"
+            ? `<img class="banner-backdrop" src="${banner.img}" alt="" aria-hidden="true">`
+            : "";
 
         this.innerHTML = `
-            <div class="banner">
-                ${banner.href ? `<a class="banner-link" href="${escapeHtml(banner.href)}">${image}</a>` : image}
+            <div class="banner banner--${this._displayMode}">
+                ${backdrop}
+                <div class="banner-foreground">
+                    ${banner.href ? `<a class="banner-link" href="${escapeHtml(banner.href)}">${image}</a>` : image}
+                </div>
                 ${
                     this._banners.length > 1
                         ? `
