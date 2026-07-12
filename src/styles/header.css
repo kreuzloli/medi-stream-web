@@ -146,8 +146,10 @@
     }
 
     .header-left {
-        min-width: max-content;
+        min-width: 0;
+        flex: 1;
         gap: 12px;
+        overflow: hidden;
     }
 
     .header-logo img {
@@ -155,8 +157,11 @@
     }
 
     .header-nav {
+        min-width: 0;
         gap: 12px;
         font-size: 14px;
+        overflow-x: auto;
+        scrollbar-width: none;
     }
 
     .header-center {
@@ -164,7 +169,7 @@
     }
 
     .header-right {
-        min-width: 48px;
+        display: none;
     }
 
     .header-user-info .svg-icon {

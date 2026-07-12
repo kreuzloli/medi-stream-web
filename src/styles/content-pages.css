@@ -328,8 +328,22 @@
     }
 
     .content-main {
+        min-width: 0;
         margin-top: 12px;
         padding: 0 12px;
+        overflow: hidden;
+    }
+
+    .content-banner,
+    .content-banner medi-banner-carousel {
+        display: block;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .content-banner .banner,
+    .content-banner .banner-img {
+        height: 190px;
     }
 
     .content-title-row {
