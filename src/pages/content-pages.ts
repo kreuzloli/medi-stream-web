@@ -1,10 +1,11 @@
 import { fallbackCertificate, fallbackTopics, fallbackTrainingDetail, fallbackTrainings } from "../content-data";
-import { defaultBanners, schematicUrl } from "../data";
-import type { Banner, CertificateDetail, TopicItem, TrainingDetail, TrainingItem } from "../models/models";
+import { defaultBanners, homeLiveItems, schematicUrl } from "../data";
+import type { Banner, CertificateDetail, LiveItem, TopicItem, TrainingDetail, TrainingItem } from "../models/models";
 import { getHashQueryParam, navigateTo } from "../router";
 import { fetchBanners } from "../services/banner";
 import {
     fetchCertificateDetail,
+    fetchLives,
     fetchTopics,
     fetchTrainingDetail,
     fetchTrainings,
@@ -92,11 +93,6 @@ class TopicsPage extends ContentPage {
                 <img class="topic-card__cover" src="${escapeHtml(safeUrl(topic.cover) || schematicUrl)}" alt="">
                 <div class="topic-card__body">
                     <h2>${escapeHtml(topic.title)}</h2>
-                    <div class="topic-card__meta">
-                        <span>◷ ${escapeHtml(topic.latestText)}</span>
-                        <span class="topic-card__follow">${topic.followed ? "已关注" : "☆ 关注"}</span>
-                    </div>
-                    <ul>${topic.minors.map((minor) => `<li>${escapeHtml(minor)}</li>`).join("")}</ul>
                 </div>
             </article>
         `).join("");
@@ -118,6 +114,42 @@ class TopicsPage extends ContentPage {
                 }
             });
         });
+    }
+}
+
+class LiveListPage extends ContentPage {
+    private lives: LiveItem[] = homeLiveItems;
+    private loading = true;
+
+    connectedCallback(): void {
+        this.render();
+        void this.loadLives();
+        void this.loadBanners("live-list");
+    }
+
+    private async loadLives(): Promise<void> {
+        try {
+            const lives = await fetchLives();
+            this.lives = lives.length > 0 ? lives : homeLiveItems;
+        } catch (error) {
+            this.lives = homeLiveItems;
+            console.warn("[live-list-page] use fallback lives", {
+                message: error instanceof Error ? error.message : String(error),
+            });
+        } finally {
+            this.loading = false;
+            this.render();
+        }
+    }
+
+    protected render(): void {
+        this.innerHTML = this.shell(
+            "近期直播",
+            `${this.loading ? '<div class="state-text">加载中...</div>' : ""}<medi-live-list></medi-live-list>`,
+        );
+        this.applyBanners();
+        const list = this.querySelector("medi-live-list") as HTMLElement & { items?: LiveItem[] };
+        list.items = this.lives;
     }
 }
 
@@ -395,6 +427,7 @@ function certificateAction(): string {
 }
 
 defineElement("topics-page", TopicsPage);
+defineElement("live-list-page", LiveListPage);
 defineElement("training-list-page", TrainingListPage);
 defineElement("training-detail-page", TrainingDetailPage);
 defineElement("certificate-query-page", CertificateQueryPage);

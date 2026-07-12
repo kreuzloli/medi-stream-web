@@ -177,7 +177,41 @@
 - 如果某一块暂无数据，返回空数组即可，前端会对该块 fallback。
 - 建议后端按业务状态过滤掉禁用、下架、过期内容。
 
-### 3. 获取精选专题列表
+### 3. 获取近期直播列表
+
+- 前端调用位置：`src/services/content.ts`
+- 前端页面：`#/live-list`
+- 请求方式：`GET`
+- 前端请求路径：`/api/lives`
+- Rust 服务路由建议：`/lives`
+- 当前 fallback：接口失败、404 或返回空数组时使用 Home 近期直播假数据。
+
+#### 响应格式
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "lives": [
+      {
+        "id": "live-1",
+        "label": "今天",
+        "time": "13:20",
+        "isToday": true,
+        "title": "直播标题",
+        "cover": "https://example.com/live.jpg",
+        "status": "LIVE",
+        "waitText": "100小时"
+      }
+    ]
+  }
+}
+```
+
+`data` 也可以直接返回数组，或使用 `items`、`list` 字段。字段含义与首页内容接口的 `LiveItem` 一致。
+
+### 4. 获取精选专题列表
 
 - 前端调用位置：`src/services/content.ts`
 - 前端页面：`#/topics`
@@ -218,7 +252,7 @@
 | `followed` | `boolean` | 是 | 当前用户是否已关注。 |
 | `minors` | `string[]` | 是 | 卡片下方最多展示三条子主题。 |
 
-### 4. 获取科研培训列表
+### 5. 获取科研培训列表
 
 - 前端调用位置：`src/services/content.ts`
 - 前端页面：`#/training`
@@ -248,7 +282,7 @@
 
 `data` 也可以直接返回数组，或使用 `items`、`list` 字段。建议按发布日期倒序返回。
 
-### 5. 获取科研培训详情
+### 6. 获取科研培训详情
 
 - 前端调用位置：`src/services/content.ts`
 - 前端页面：`#/training-detail?id=<id>`
@@ -286,7 +320,7 @@
 
 详情也可以包装在 `training`、`detail` 或 `item` 字段中。`paragraphs` 应按页面展示顺序返回，不建议把未经清洗的 HTML 直接交给前端。
 
-### 6. 查询证书
+### 7. 查询证书
 
 - 前端调用位置：`src/services/content.ts`
 - 前端页面：`#/certificates`
@@ -334,7 +368,7 @@
 }
 ```
 
-### 7. 获取证书详情
+### 8. 获取证书详情
 
 - 前端调用位置：`src/services/content.ts`
 - 前端页面：`#/certificate-detail?id=<id>`

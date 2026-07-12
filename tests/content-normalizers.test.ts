@@ -4,11 +4,21 @@ import test from "node:test";
 import {
     normalizeCertificateDetail,
     normalizeCertificateQueryResult,
+    normalizeLiveList,
     normalizeTopicList,
     normalizeTrainingDetail,
     normalizeTrainingList,
     validateCertificateQuery,
 } from "../src/services/content-normalizers.ts";
+
+test("normalizeLiveList accepts a live list envelope", () => {
+    const lives = normalizeLiveList({
+        lives: [{ id: "live-1", label: "今天", time: "13:20", isToday: true, title: "直播" }],
+    });
+
+    assert.equal(lives.length, 1);
+    assert.equal(lives[0]?.id, "live-1");
+});
 
 test("normalizeTopicList accepts the supported list envelope", () => {
     const topics = normalizeTopicList({

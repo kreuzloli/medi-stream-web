@@ -2,10 +2,18 @@ import type {
     CertificateDetail,
     CertificateQuery,
     CertificateQueryResult,
+    LiveItem,
     TopicItem,
     TrainingDetail,
     TrainingItem,
 } from "../models/models";
+
+/**
+ * 归一化近期直播列表，兼容 lives、items 和 list 包装字段。
+ */
+export function normalizeLiveList(data: unknown): LiveItem[] {
+    return normalizeList(data, "lives").filter(isLiveItem);
+}
 
 /**
  * 归一化专题列表，兼容后端直接返回数组以及常见列表字段。
@@ -98,6 +106,15 @@ function isTopicItem(value: unknown): value is TopicItem {
         && typeof value.followed === "boolean"
         && Array.isArray(value.minors)
         && value.minors.every((minor) => typeof minor === "string");
+}
+
+function isLiveItem(value: unknown): value is LiveItem {
+    return isRecord(value)
+        && typeof value.id === "string"
+        && typeof value.label === "string"
+        && typeof value.time === "string"
+        && typeof value.isToday === "boolean"
+        && typeof value.title === "string";
 }
 
 function isTrainingItem(value: unknown): value is TrainingItem {

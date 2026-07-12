@@ -49,6 +49,10 @@ export class MediLiveList extends HTMLElement {
                 ${content}
             </div>
         `;
+
+        this.querySelector(".btn-more-live")?.addEventListener("click", () => {
+            location.hash = "/live-list";
+        });
     }
 
     /**

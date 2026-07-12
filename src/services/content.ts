@@ -3,6 +3,7 @@ import type {
     CertificateDetail,
     CertificateQuery,
     CertificateQueryResult,
+    LiveItem,
     TopicItem,
     TrainingDetail,
     TrainingItem,
@@ -13,6 +14,7 @@ import { ContentNetworkError, ContentRequestError } from "./content-errors";
 import {
     normalizeCertificateDetail,
     normalizeCertificateQueryResult,
+    normalizeLiveList,
     normalizeTopicList,
     normalizeTrainingDetail,
     normalizeTrainingList,
@@ -22,10 +24,15 @@ import {
  * 以下路径是前后端联调前的临时契约。后端确定正式路径后只需在此处调整。
  */
 const CONTENT_PATHS = {
+    lives: "/lives",
     topics: "/topics",
     trainings: "/trainings",
     certificateQuery: "/certificates/query",
 };
+
+export async function fetchLives(): Promise<LiveItem[]> {
+    return request(CONTENT_PATHS.lives, normalizeLiveList, "近期直播列表");
+}
 
 export async function fetchTopics(): Promise<TopicItem[]> {
     return request(CONTENT_PATHS.topics, normalizeTopicList, "专题列表");

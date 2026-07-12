@@ -2,6 +2,7 @@ import accountIcon from "../../assets/icons/account.svg";
 import logoUrl from "../../assets/images/logo_v2.jpg";
 import searchIcon from "../../assets/icons/search.svg";
 import { defineElement, icon } from "../../utils/utils";
+import { isHeaderNavActive } from "./header-navigation";
 
 /**
  * 首页顶部导航栏。
@@ -66,11 +67,7 @@ export class MediHeader extends HTMLElement {
      */
     private navLink(path: string, label: string): string {
         const currentPath = location.hash.replace(/^#/, "").split("?")[0] || "/";
-        const sectionPath = path === "/" ? "/" : currentPath;
-        const isCertificateDetail = path === "/certificates" && sectionPath === "/certificate-detail";
-        const active = path === "/"
-            ? sectionPath === "/"
-            : sectionPath === path || sectionPath.startsWith(`${path}-`) || isCertificateDetail;
+        const active = isHeaderNavActive(path, currentPath);
 
         return `<a href="#${path}" class="${active ? "active" : ""}">${label}</a>`;
     }

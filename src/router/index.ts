@@ -38,6 +38,10 @@ const routes: RouteConfig[] = [
         component: 'topics-page',
     },
     {
+        path: '/live-list',
+        component: 'live-list-page',
+    },
+    {
         path: '/training',
         component: 'training-list-page',
     },
