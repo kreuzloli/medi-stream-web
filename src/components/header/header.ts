@@ -52,14 +52,40 @@ export class MediHeader extends HTMLElement {
 
                     <div class="header-right">
                         <div class="header-container">
-                            <button class="header-btn header-user-info" type="button" aria-label="用户" title="用户">
+                            <button
+                                class="header-btn header-user-info"
+                                type="button"
+                                data-wechat-login-trigger
+                                aria-label="微信扫码登录"
+                                title="微信扫码登录"
+                            >
                                 ${icon(accountIcon)}
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+            <wechat-login-dialog></wechat-login-dialog>
         `;
+
+        this.bindUserEntry();
+    }
+
+    /**
+     * 用户图标只负责打开扫码弹窗，二维码请求和轮询由弹窗组件独立管理。
+     */
+    private bindUserEntry(): void {
+        this.querySelector("[data-wechat-login-trigger]")?.addEventListener("click", () => {
+            const dialog = this.querySelector<HTMLElement & { open: () => void }>("wechat-login-dialog");
+
+            if (!dialog) {
+                console.error("[header] wechat login dialog not found");
+                return;
+            }
+
+            console.info("[header] wechat login entry clicked");
+            dialog.open();
+        });
     }
 
     /**
