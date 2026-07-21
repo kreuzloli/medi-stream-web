@@ -16,6 +16,12 @@ export function withReturnTo(path: string, returnTo: string): string {
     return `${path}?returnTo=${encodeURIComponent(normalizeReturnPath(returnTo))}`;
 }
 
+/** 判断目标地址是否就是当前 hash 路由，包括直播间等 query 参数。 */
+export function isCurrentHashRoute(currentHash: string, targetPath: string): boolean {
+    const currentPath = currentHash.replace(/^#/, "") || "/";
+    return normalizeReturnPath(currentPath) === normalizeReturnPath(targetPath);
+}
+
 function safeDecode(value: string): string {
     try {
         return decodeURIComponent(value);

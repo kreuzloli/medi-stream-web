@@ -6,6 +6,7 @@ import { getToken } from "../services/auth";
 import { fetchLiveWatch, type LiveWatchInfo } from "../services/live-watch";
 import { currentReturnPath } from "../services/return-path";
 import { defineElement, escapeHtml } from "../utils/utils";
+import { renderLiveWatchReservations } from "./live-watch-reservations";
 
 type PageState = "login-required" | "missing-room" | "loading" | "ready" | "error";
 
@@ -92,14 +93,17 @@ export class LiveWatchPage extends HTMLElement {
                 <h1>${escapeHtml(info.room.title)}</h1>
                 <p>${escapeHtml(info.room.description || "专业医学直播内容")}</p>
             </header>
-            <section class="live-watch-player-card">
-                <live-player></live-player>
-                <div class="live-watch-toolbar">
-                    <div><strong>${escapeHtml(info.stream.title || info.stream.streamName)}</strong><span>房间号 ${escapeHtml(info.room.roomCode)}</span></div>
-                    <button type="button" data-play-live>开始播放</button>
-                </div>
-                <p class="live-watch-status" data-live-status>正在连接直播流…</p>
-            </section>
+            <div class="live-watch-content-grid">
+                <section class="live-watch-player-card">
+                    <live-player></live-player>
+                    <div class="live-watch-toolbar">
+                        <div><strong>${escapeHtml(info.stream.title || info.stream.streamName)}</strong><span>房间号 ${escapeHtml(info.room.roomCode)}</span></div>
+                        <button type="button" data-play-live>开始播放</button>
+                    </div>
+                    <p class="live-watch-status" data-live-status>正在连接直播流…</p>
+                </section>
+                ${renderLiveWatchReservations()}
+            </div>
         </main>`;
     }
 

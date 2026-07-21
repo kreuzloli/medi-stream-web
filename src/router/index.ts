@@ -1,3 +1,5 @@
+import { isCurrentHashRoute } from "../services/return-path";
+
 type RouteConfig = {
     path: string;
     component: string;
@@ -150,6 +152,14 @@ export function navigateTo(path: string) {
     console.info('[router] navigate', {
         path,
     });
+
+    // 给相同 hash 重新赋值不会触发 hashchange。
+    // 扫码登录返回原直播间时需要主动重建页面，让页面使用刚保存的 Token 加载直播内容。
+    if (isCurrentHashRoute(location.hash, path)) {
+        console.info('[router] refresh unchanged hash route', { path });
+        renderRoute();
+        return;
+    }
 
     location.hash = path;
 }

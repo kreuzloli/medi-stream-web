@@ -5,6 +5,7 @@
 .live-watch-live-dot { width: 8px; height: 8px; border-radius: 50%; background: #2f6bff; box-shadow: 0 0 0 6px rgba(47,107,255,.16); }
 .live-watch-heading h1 { margin: 17px 0 10px; font-size: clamp(30px, 4vw, 48px); letter-spacing: -.03em; }
 .live-watch-heading p { margin: 0; color: #9caac2; line-height: 1.7; }
+.live-watch-content-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
 .live-watch-player-card { overflow: hidden; border: 1px solid #27344c; border-radius: 14px; background: #111b2c; box-shadow: 0 28px 70px rgba(0,0,0,.32); }
 .live-watch-toolbar { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 14px 20px; border-top: 1px solid #27344c; }
 .live-watch-toolbar > div { display: grid; gap: 5px; }
@@ -13,6 +14,17 @@
 .live-watch-toolbar button, .live-watch-state button, .live-watch-state a { padding: 11px 20px; border: 0; border-radius: 8px; background: #2f6bff; color: #fff; font-weight: 700; text-decoration: none; cursor: pointer; }
 .live-watch-status { margin: 0; padding: 0 20px 15px; color: #8da0c1; font-size: 12px; word-break: break-all; }
 .live-watch-status--error { color: #ff9ba5; }
+.live-watch-reservations { display: grid; gap: 16px; }
+.live-watch-reservation-card { position: relative; overflow: hidden; min-height: 190px; padding: 22px; border: 1px solid #27344c; border-radius: 14px; background: linear-gradient(145deg, rgba(23,35,56,.98), rgba(15,24,40,.98)); box-shadow: 0 20px 48px rgba(0,0,0,.22); }
+.live-watch-reservation-card::after { position: absolute; right: -38px; bottom: -52px; width: 130px; height: 130px; border: 1px solid rgba(47,107,255,.2); border-radius: 50%; background: rgba(47,107,255,.06); content: ""; }
+.live-watch-reservation-icon { display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: 22px; border: 1px solid rgba(83,131,255,.3); border-radius: 11px; background: rgba(47,107,255,.1); color: #77a0ff; }
+.live-watch-reservation-icon svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; }
+.live-watch-reservation-icon circle { fill: currentColor; stroke: none; }
+.live-watch-reservation-content { position: relative; z-index: 1; }
+.live-watch-reservation-kicker { display: block; margin-bottom: 7px; color: #668ad9; font-size: 9px; font-weight: 800; letter-spacing: .16em; }
+.live-watch-reservation-card h2 { margin: 0; color: #f1f5ff; font-size: 18px; letter-spacing: -.01em; }
+.live-watch-reservation-card p { min-height: 38px; margin: 8px 0 15px; color: #8d9bb4; font-size: 12px; line-height: 1.55; }
+.live-watch-reservation-status { display: inline-flex; align-items: center; min-height: 25px; padding: 0 10px; border: 1px solid #31415f; border-radius: 999px; color: #9aa9c1; background: rgba(9,17,30,.52); font-size: 10px; font-weight: 700; }
 .live-watch-state { min-height: calc(100vh - 90px); display: grid; place-content: center; justify-items: center; padding: 40px 20px; text-align: center; }
 .live-watch-state-mark { color: #7096ee; font-size: 12px; font-weight: 800; letter-spacing: .14em; }
 .live-watch-state h1 { margin: 16px 0 10px; font-size: 34px; }
@@ -21,6 +33,7 @@
 @keyframes live-watch-spin { to { transform: rotate(360deg); } }
 @media (max-width: 900px) {
     .live-watch-shell { width: calc(100% - 24px); padding-top: 30px; }
+    .live-watch-content-grid { grid-template-columns: 1fr; }
     .live-watch-toolbar { align-items: flex-start; flex-direction: column; }
     .live-watch-toolbar button { width: 100%; }
 }
