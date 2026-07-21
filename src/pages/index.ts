@@ -5,6 +5,8 @@ import '../components/wechat-login/wechat-login-dialog';
 import './home-page';
 import './content-pages';
 import './live-page';
+import './live-watch-page';
 import './live-pusher-page';
 import './not-found-page';
 import './wechat/wechat-live-page';
+import './wechat/wechat-register-page';

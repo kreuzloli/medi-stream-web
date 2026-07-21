@@ -9,6 +9,8 @@
 @import "./footer.css";
 @import "./content-pages.css";
 @import "./wechat-login.css";
+@import "./wechat-register.css";
+@import "./live-watch.css";
 
 body {
     margin: 0;

@@ -1,5 +1,9 @@
 import QRCode from "qrcode";
 import logoUrl from "../../assets/images/logo_v2.jpg";
+import { navigateTo } from "../../router";
+import { saveToken } from "../../services/auth";
+import { currentReturnPath, normalizeReturnPath, withReturnTo } from "../../services/return-path";
+import { WECHAT_REGISTER_TOKEN_KEY } from "../../services/wechat-register";
 
 import {
     fetchWechatLoginStatus,
@@ -31,6 +35,7 @@ export class WechatLoginDialog extends HTMLElement {
     private pollTimer: number | undefined;
     private activeRequest: AbortController | undefined;
     private requestVersion = 0;
+    private returnTo = "/";
 
     connectedCallback(): void {
         this.render();
@@ -45,12 +50,13 @@ export class WechatLoginDialog extends HTMLElement {
     /**
      * 打开弹窗并创建新的二维码会话；重复调用不会启动第二套轮询。
      */
-    open(): void {
+    open(returnTo = currentReturnPath()): void {
         if (this.isOpen) {
             return;
         }
 
         this.isOpen = true;
+        this.returnTo = normalizeReturnPath(returnTo);
         this.resetViewState();
         document.body.classList.add("wechat-login-open");
         window.addEventListener("keydown", this.handleKeydown);
@@ -187,6 +193,34 @@ export class WechatLoginDialog extends HTMLElement {
                 console.info("[wechat-login-dialog] polling stopped", {
                     reason: result.status.toLowerCase(),
                 });
+                if (result.status === "SUCCESS") {
+                    if (!result.token) {
+                        throw new Error("登录成功响应缺少登录凭证");
+                    }
+                    console.info("[wechat-login-dialog] login completed", {
+                        returnTo: this.returnTo,
+                        tokenLength: result.token.length,
+                    });
+                    saveToken(result.token);
+                    const returnTo = this.returnTo;
+                    this.close("login-success");
+                    navigateTo(returnTo);
+                    return;
+                }
+                if (result.status === "REGISTER_REQUIRED") {
+                    if (!result.registerToken) {
+                        throw new Error("微信验证成功，但注册凭证缺失");
+                    }
+                    sessionStorage.setItem(WECHAT_REGISTER_TOKEN_KEY, result.registerToken);
+                    console.info("[wechat-login-dialog] registration required", {
+                        returnTo: this.returnTo,
+                        registerToken: result.registerToken,
+                    });
+                    const registerPath = withReturnTo("/wechat-register", this.returnTo);
+                    this.close("registration-required");
+                    navigateTo(registerPath);
+                    return;
+                }
                 return;
             }
 

@@ -4,7 +4,7 @@ import { API_BASE } from '../../services/api';
 
 type TCPlayerInstance = {
     src: (url: string) => void;
-    play: () => void;
+    play: () => void | Promise<void>;
     pause: () => void;
     dispose: () => void;
 };
@@ -152,7 +152,7 @@ export class LivePlayerComponent extends HTMLElement {
         }
 
         this.player.src(url);
-        this.player.play();
+        await Promise.resolve(this.player.play());
 
         // 状态文案保留完整地址，方便本地排查具体播放源；日志里不打印完整 URL。
         this.dispatchStatus(`正在播放：${url}`, 'success');

@@ -151,7 +151,16 @@ medi-header {
 .header-container {
     padding-left: 18px;
     padding-right: 8px;
+    position: relative;
 }
+
+.header-avatar { width: 55px; height: 55px; display: block; border-radius: 50%; object-fit: cover; border: 2px solid #e5edff; cursor: pointer; }
+.header-user-menu { position: absolute; top: calc(100% + 14px); right: 8px; width: 210px; padding: 10px; border: 1px solid #e2e7f0; border-radius: 12px; background: #fff; box-shadow: 0 18px 45px rgba(22, 37, 67, .16); }
+.header-user-summary { display: grid; gap: 4px; padding: 10px 10px 12px; border-bottom: 1px solid #edf0f5; }
+.header-user-summary strong { color: #172554; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.header-user-summary span { color: #7a879d; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.header-user-menu button { width: 100%; margin-top: 8px; padding: 10px; border: 0; border-radius: 8px; background: transparent; color: #b83242; text-align: left; cursor: pointer; }
+.header-user-menu button:hover { background: #fff1f3; }
 
 @media (max-width: 900px) {
     .header {
@@ -200,4 +209,6 @@ medi-header {
         width: 42px;
         height: 42px;
     }
+    .header-avatar { width: 42px; height: 42px; }
+    .header-user-menu { position: fixed; top: 72px; right: 12px; }
 }
